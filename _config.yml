@@ -11,7 +11,7 @@ plugins:
 
 paginate: 10
 
-# skin: midnight
+skin: midnight
 
 # Uncomment the below line and set the tracking ID for enabling Google Analytics
 # 
