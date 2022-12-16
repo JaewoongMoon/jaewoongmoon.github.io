@@ -69,108 +69,9 @@ msf6 auxiliary(scanner/ssl/openssl_heartbleed) >
 ```
 
 # POC
-## 취약한 서버1
-- 취약한 서버를 구동해서 확인해본다. 
-- 아래 도커 이미지를 활용한다. 
-- https://hub.docker.com/r/vulnerables/cve-2014-0160
+## 취약한 서버
+다음을 커맨드로 준비했다. 
 
-로컬호스트의 8082번 포트로 실행했다. 
-```sh
-# 필요에 따라 옵션 및 포트 변경
-# docker run --rm -it -p 8080:443 vulnerables/cve-2014-0160 
-docker run -d -p 8082:443 vulnerables/cve-2014-0160 
-```
-### 접속테스트 
-curl 로 테스트해본 결과. 제대로 동작중이다. 
-```sh
-curl localhost:8082
-
-<html>
-    <head><title>Vulnerables | HeartBleed</title></head>
-    <body>
-        <h1>This host is vulnerable to heartbleed, please exploit it</h1>
-    </body>
-</html>
-```
-
-### heartbleed-poc.py 파이썬 스크립트로 스캔
-스캔 결과. 실패했다. Unexpected EOF. 
-```sh
-python heartbleed-poc.py localhost -p 8082
-
-Scanning localhost on port 8082
-Connecting...
-Sending Client Hello...
-Waiting for Server Hello...
-Unexpected EOF receiving record payload - server closed connection
-Server closed connection without sending Server Hello.
-Got an error while parsing the response, bailing ...
-```
-### ZGrab2 로 스캔
-커넥션 타임아웃이 발생하고 실패했다. 
-```sh
-zgrab2 http --use-https --heartbleed -t 0 -f test_target.csv
-
-INFO[0000] started grab at 2022-12-13T03:14:23Z
-{"domain":"localhost:8082","data":{"http":{"status":"connection-timeout","protocol":"http","result":{},"timestamp":"2022-12-13T03:14:23Z","error":"dial tcp: lookup localhost:8082: i/o timeout"}}}
-INFO[0000] finished grab at 2022-12-13T03:14:23Z
-{"statuses":{"http":{"successes":0,"failures":1}},"start":"2022-12-13T03:14:23Z","end":"2022-12-13T03:14:23Z","duration":"6.886529ms"}
-```
-
-### Nmap NSE 스크립트로 스캔
-정상종료는 됐지만 Heartbleed 취약점이 탐지되지 않았다. 
-
-```sh
-nmap -script=ssl-heartbleed -p 443 172.17.0.3
-
-Starting Nmap 7.93 ( https://nmap.org ) at 2022-12-13 07:57 UTC
-Nmap scan report for 172.17.0.3
-Host is up (0.000060s latency).
-
-PORT    STATE SERVICE
-443/tcp open  https
-MAC Address: 생략
-
-Nmap done: 1 IP address (1 host up) scanned in 0.41 seconds
-```
-
-### cardiac-arrest.py 파이썬 스크립트 스캔
-서버에서 커넥션을 끊었다는 메세지가 출력되었다. 탐지되지 않았다. 
-```sh
-python cardiac-arrest.py -p 8082 localhost
-[INFO] Testing: localhost (127.0.0.1)
-
-[INFO] Connecting to 127.0.0.1:8082 using SSLv3
-[ERROR] The server closed the connection without sending the ServerHello. This might mean the server does not support SSLv3 or it might not support SSL/TLS at all.
-
-[INFO] Connecting to 127.0.0.1:8082 using TLSv1.0
-[ERROR] The server closed the connection without sending the ServerHello. This might mean the server does not support TLSv1.0 or it might not support SSL/TLS at all.
-
-[INFO] Connecting to 127.0.0.1:8082 using TLSv1.1
-[ERROR] The server closed the connection without sending the ServerHello. This might mean the server does not support TLSv1.1 or it might not support SSL/TLS at all.
-
-[INFO] Connecting to 127.0.0.1:8082 using TLSv1.2
-[ERROR] The server closed the connection without sending the ServerHello. This might mean the server does not support TLSv1.2 or it might not support SSL/TLS at all.
-
-[PASS] localhost:8082 (127.0.0.1:8082) does not appear to be vulnerable to Heartbleed!
-```
-
-### 메타스플로잇 프레임워크 스캔 
-스캔은 정상종료했지만 탐지되지 않았다. 
-```sh
-msf6 auxiliary(scanner/ssl/openssl_heartbleed) > set RHOSTS localhost
-RHOSTS => localhost
-msf6 auxiliary(scanner/ssl/openssl_heartbleed) > set RPORT 8082
-RPORT => 8082
-msf6 auxiliary(scanner/ssl/openssl_heartbleed) > exploit
-
-[*] localhost:8082        - Scanned 1 of 1 hosts (100% complete)
-[*] Auxiliary module execution completed
-
-```
-
-## 취약한 서버2
-- 서버1이 스캐너에서 제대로 취약점이 탐지되지 않는 경우를 대비해서  복수의 취약한 서버를 준비한다. 
 ```sh
 docker pull hmlio/vaas-cve-2014-0160
 docker run -d -p 8443:443 hmlio/vaas-cve-2014-0160
@@ -198,6 +99,7 @@ Instead use the HTTPS scheme to access this URL, please.<br />
 
 도커 컨테이너 IP주소로 접속한 결과. (-k 옵션은 TLS증명서 검증 에러를 무시하라는 옵션)
 잘 동작한다. (참고로 curl https://localhost:8443 -k 로도 접속가능하다.)
+
 ```sh
 curl https://172.17.0.4 -k
 
@@ -257,6 +159,7 @@ INFO[0000] finished grab at 2022-12-13T05:40:11Z
 - 스캔대상을 localhost로 변경하니까 제대로 스캔되었다. 
 - 결과json파일을 보면 상당한 양의 정보를 확인할 수 있다. 
 - 그 중에서 "heartbleed_vulnerable" 이라는 항목에 결과가 true / false 로 나타난다. 
+
 ```sh
 zgrab2 http --heartbleed --use-https -p 8443 -f test_target.csv -o zgrab2-heartbleed-result.json
 INFO[0000] started grab at 2022-12-14T04:20:36Z
@@ -339,7 +242,8 @@ Nmap done: 1 IP address (1 host up) scanned in 0.39 seconds
 ```
 
 ### 메타스플로잇 프레임워크 스캔 
-탐지 성공했다. 
+탐지 성공했다. 잘 찾아준다. 
+
 ```sh
 msf6 auxiliary(scanner/ssl/openssl_heartbleed) > set rhosts localhost
 rhosts => localhost

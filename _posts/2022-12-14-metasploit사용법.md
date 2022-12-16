@@ -2,7 +2,7 @@
 layout: post
 title: "Metasploit 프레임워크 설치 및 사용법"
 categories: [보안, 취약점스캐너]
-tags: tags: [취약점, 스캐너, metasploit]
+tags: [취약점, 스캐너, metasploit]
 ---
 
 # Metasploit 설치 및 셋업
@@ -88,6 +88,7 @@ msf6 auxiliary(scanner/ssl/openssl_heartbleed) >
 - 어떤 옵션이 사용가능한지 보기위해 show options를 사용한다. 
 - 또는 info 커맨드를 사용해도 된다. 
 - Required 필드는 필수로 설정해야 하는 값이다 (입력하지 않으면 기본값이 사용되는 것 같다).
+
 ```sh
 use auxiliary/scanner/ssl/openssl_heartbleed
 msf6 auxiliary(scanner/ssl/openssl_heartbleed) > show options
@@ -142,8 +143,7 @@ msf >
 msfupdate 
 ```
 
-
- # 참고 
- - https://docs.rapid7.com/metasploit/installing-the-metasploit-framework/
- - https://t-okk.tistory.com/187
- - https://www.offensive-security.com/metasploit-unleashed/msfconsole-commands/
+# 참고 
+- https://docs.rapid7.com/metasploit/installing-the-metasploit-framework/
+- https://t-okk.tistory.com/187
+- https://www.offensive-security.com/metasploit-unleashed/msfconsole-commands/
