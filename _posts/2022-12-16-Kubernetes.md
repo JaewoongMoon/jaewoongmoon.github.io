@@ -3,6 +3,7 @@ layout: post
 title: "Kubernetes 정리"
 categories: [프로그래밍]
 tags: [프로그래밍, 컨테이너, Docker, Kubernetes]
+toc: true
 ---
 
 # Kubernetes 개요
@@ -76,7 +77,7 @@ Control Plane 과 Worker Node를 합쳐서 클러스터로 부른다.
 # 쿠버네티스 사용하기
 - Docker Desktop 설정에서 Kubernetes 기능을 유효화한다. 
 - Settings > Kubernetes > Enable Kubernetes 를 체크
-![쿠버네티스 사용 설정](/images/docker-desktop-enable-kuburnetes.png)
+![쿠버네티스 사용 설정](/images/docker-desktop-enable-kubernetes.png)
 
 
 # kubectl 사용

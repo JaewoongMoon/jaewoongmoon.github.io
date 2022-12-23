@@ -3,6 +3,7 @@ layout: post
 title: "하트블리드(heartbleed) 취약점 조사"
 categories: [보안취약점]
 tags: [보안취약점, openssl, heartbleed]
+toc: true
 ---
 
 # 하트블리드 개요 
@@ -23,6 +24,7 @@ tags: [보안취약점, openssl, heartbleed]
 
 ## Nmap NSE 스크립트
 - https://github.com/sensepost/heartbleed-poc/blob/master/ssl-heartbleed.nse 를 다운로드 받는다. 
+
 ```
 cp ssl-heartbleed.nse /usr/share/nmap/scripts/
 nmap --script-updatedb 
@@ -127,6 +129,7 @@ For further details please see <a href="https://github.com/hmlio/vaas-cve-2014-0
 
 ### heartbleed-poc.py 파이썬 스크립트로 스캔
 이번에는 socket.gaierror 예외가 발생했다. 로컬 호스트 주소는 체크를 못하는 것일까?
+
 ```sh
 python heartbleed-poc.py https://172.17.0.4
 
@@ -148,6 +151,7 @@ socket.gaierror: [Errno -2] Name or service not known
 
 ### ZGrab2로 스캔 
 - 스캔대상을 도커 컨테이너 IP 주소를 지정하면 타임아웃에러가 발생한다. 
+
 ```sh
 zgrab2 http --use-https --heartbleed -t 0 -f test_target.csv
 
@@ -156,6 +160,7 @@ INFO[0000] started grab at 2022-12-13T05:40:11Z
 INFO[0000] finished grab at 2022-12-13T05:40:11Z
 {"statuses":{"http":{"successes":0,"failures":1}},"start":"2022-12-13T05:40:11Z","end":"2022-12-13T05:40:11Z","duration":"7.172554ms"}
 ```
+
 - 스캔대상을 localhost로 변경하니까 제대로 스캔되었다. 
 - 결과json파일을 보면 상당한 양의 정보를 확인할 수 있다. 
 - 그 중에서 "heartbleed_vulnerable" 이라는 항목에 결과가 true / false 로 나타난다. 

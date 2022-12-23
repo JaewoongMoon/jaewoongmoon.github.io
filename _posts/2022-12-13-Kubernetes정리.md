@@ -3,6 +3,7 @@ layout: post
 title: "kubernetes 정리"
 categories: [프로그래밍]
 tags: [프로그래밍, kubernetes]
+toc: true
 ---
 
 # Kubernetes 개요
