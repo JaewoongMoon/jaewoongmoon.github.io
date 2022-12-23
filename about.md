@@ -4,4 +4,6 @@ title: About
 permalink: /about/
 ---
 
-Another minimal style of Jekyll theme for writers.
+- 일본에 살고 있는 보안 엔지니어입니다.  
+- 이 곳은 보안 취약점이나, 웹 어플리케이션 개발, 기타 게임 해킹 관련 기술을 연구한 결과를 정리하는 용도로 사용하는 개인 블로그입니다. 
+- 일본 생활이나 취미에 대한 글도 가끔씩 올려보려고 합니다. 
