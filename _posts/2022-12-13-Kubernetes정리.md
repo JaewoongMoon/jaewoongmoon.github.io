@@ -76,8 +76,12 @@ Control Plane 과 Worker Node를 합쳐서 클러스터로 부른다.
 
 ## Cluster
 - 복수의 노드를 묶어서 클러스터로 관리한다.  
+
 ## Service
-Kubernetes 에서 서비스란 네트워크를 정의하는 녀석이다. 
+- Kubernetes 에서 서비스란 네트워크를 정의하는 녀석이다. 
+- 복수의 Pod을 묶어서 서비스로 관리한다. 
+- Pod마다 IP주소가 할당되므로 여러개의 Pod을 하나의 도메인명으로 묶어줄 필요가 생긴다. 
+- 그를 위해서 Service가 등장. 
 
 한편, Ingress 라는 Pod로의 통신을 제어하는 기능이 있다. 
 Ingress 는 kubernetes 를 동작하는 환경에 따라 동작이 다르다. 예를들어 GCP에서는 HTTP 로드 밸런서가 사용된다. 
