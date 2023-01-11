@@ -28,6 +28,7 @@ toc: true
 
 ## Control Plane
 전체를 컨트롤 해주는 녀석이다. 다음과 같은 컴포넌트로 구성되어 있다. 
+
 1. kube-apiservser
 - 컨트롤 플레인의 프론트엔드 
 - 쿠버네티스 API를 노출한다. 
@@ -55,11 +56,15 @@ toc: true
 - 로컬환경에서는 필요없음. 
 - 구성도에는 c-c-m 으로 표기 
 
-## Worker Node
+## Data Plane 
+Pod가 움직이는 영역 
+
+### Worker Node
 워커 노드는 애플리케이션의 구성요소인 파드를 호스트한다.
 1. kuberlet
 - 클러스터의 각 노드에서 실행되는 에이전트
 - Kubelet은 파드에서 컨테이너가 확실하게 동작하도록 관리한다.
+- 컨트롤 플레인의 API서버와 통신한다. 
 
 2. kube-proxy
 - 클러스터의 각 노드에서 실행되는 네트워크 프록시
@@ -70,24 +75,7 @@ toc: true
 ## Kubernetes Cluster
 Control Plane 과 Worker Node를 합쳐서 클러스터로 부른다. 
 
-# 기타 리소스 
-## Node
-- 실제로 콘테이너가 동작하는 서버 
-
-## Cluster
-- 복수의 노드를 묶어서 클러스터로 관리한다.  
-
-## Service
-- Kubernetes 에서 서비스란 네트워크를 정의하는 녀석이다. 
-- 복수의 Pod을 묶어서 서비스로 관리한다. 
-- Pod마다 IP주소가 할당되므로 여러개의 Pod을 하나의 도메인명으로 묶어줄 필요가 생긴다. 
-- 그를 위해서 Service가 등장. 
-
-한편, Ingress 라는 Pod로의 통신을 제어하는 기능이 있다. 
-Ingress 는 kubernetes 를 동작하는 환경에 따라 동작이 다르다. 예를들어 GCP에서는 HTTP 로드 밸런서가 사용된다. 
-
-
-# 쿠버네티스 사용하기
+# Docker Desktop에서 쿠버네티스 사용설정하기
 - Docker Desktop 설정에서 Kubernetes 기능을 유효화한다. 
 - Settings > Kubernetes > Enable Kubernetes 를 체크
 ![쿠버네티스 사용 설정](/images/docker-desktop-enable-kuburnetes.png)
@@ -134,16 +122,53 @@ kubectl [command] [TYPE] [NAME]
 ## 리소스 삭제
 `kubectl delete -f [pod 파일명].yaml`
 
-# Pod
-## Pod 개요
+# Kubernetes 오브젝트 
+## Pod 
 - 1개 또는 복수의 콘테이너를 묶어서 Pod라는 단위로 관리한다. 
-- 주로 메인 컨테이너와 서포트 컨테이너를 하나의 Pod로 묶는 경우가 많다. 
-- 예를들어, 웹 서버용 컨테이너와 프록시 서버용 컨테이너를 묶어서 하나의 pod로 관리한다. 
-- Node 보다 작은 단위이다. (하나의 pod가 복수의 Node에 포함되는 경우는 없다.) 
+- 주로 메인 컨테이너와 서포트 컨테이너를 하나의 Pod로 묶는 경우가 많다. (사이드카 패턴 혹은 어댑터 패턴)
+- 예를들어, 어플리케이션 컨테이너와 메모리 캐시 혹은 모니터링용 컨테이너를 하나의 Pod으로 구동하는 경우가 있다. 혹은 웹 서버용 컨테이너와 프록시 서버용 컨테이너를 묶어서 하나의 pod로 관리한다.
+- Node 보다 작은 단위이다. (참고로 하나의 pod가 복수의 Node에 포함되는 경우는 없다.) 
 - Kubernetes 에서 디플로이의 최소 단위이다. 
+- Pod 내의 컨테이너는 반드시 동일한 하드웨어에서 동작하낟. 
 - Pod 내에서 네트워크나 스토리지 등 공유자원을 가진다. 
 - 따라서, 동일 포트는 쓸 수 없다.
 - localhost 로 컨테이너간에 통신이 가능하다. 
+
+## Service
+- Kubernetes 에서 서비스란 네트워크를 정의하는 녀석이다. 
+- 복수의 Pod을 묶어서 서비스로 관리한다. 
+- Pod마다 IP주소가 할당되므로 여러개의 Pod을 하나의 도메인명으로 묶어줄 필요가 생긴다. 
+- 그를 위해서 Service가 등장. 
+
+한편, Ingress 라는 Pod로의 통신을 제어하는 기능이 있다. 
+Ingress 는 kubernetes 를 동작하는 환경에 따라 동작이 다르다. 예를들어 GCP에서는 HTTP 로드 밸런서가 사용된다. 
+
+## Node
+- 실제로 콘테이너가 동작하는 서버 
+- 내부에 Pod 나 Service를 가지고 있다. 
+
+## Cluster
+- 복수의 노드를 묶어서 클러스터로 관리한다.  
+
+## ConfigMap / Secret
+- 컨테이너에게 OS환경변수를 주입하거나 설정등을 전달하기 위한 오브젝트
+- 예를들어, 개발환경용 ConfigMap이나 운영환경용 ConfigMap이 있을 수 있다. 
+- Secret은 기밀성이 높은 정보 관리용
+
+## ReplicaSet (레플리카셋)
+- 다수의 컨테이너를 어떻게, 몇 개나 구동할 것인지를 설정할 수 있다. 
+- 레플리카셋에 설정된 컨테이너 개수는 항상 떠 있는 상태일 것을 kubernetes 가 담보해준다. 
+- 예를 들어, 어떤 컨테이너가 어떤 이유로 다운되었을 경우, 새로운 컨테이너를 구동해준다. 
+- 실제 업무에서 레플리카셋을 쓸 경우는 거의 없다. Deployment를 사용하게 된다. 레플리카셋은 갱신시에 적혀진 컨테이너가 전부 사라지므로 다운타임이 발생하게 되기 때문이다. 
+
+## Deloyment
+- ReplicaSet과 설정 항목이 비슷하다. 
+- 레플리카셋과 비교해서 strategy (갱신전략, 예를들면 하나씩 갱신해가는 롤링 업데이트 등), revisionHistory, paused, progressDeadlineSeconds 등을 추가로 설정가능하다. 
+- Deployment가 내부적으로는 복수의 레플리카셋을 사용하는 형태가 된다. 
+
+## DaemonSet
+- 로그 수집 프로그램등 어떤 서버상에 반드시 하나의 Pod는 실행시키고 싶은 경우에 사용
+- 직접 쓰는 경우는 별로 없을지도 모른다. OSS 플러그인에서는 사용하는 경우가 있다. 
 
 # Kubernetes 오브젝트 생성
 ##  필수 필드 
@@ -168,16 +193,12 @@ kubectl get nodes --v=9
 - 이렇게 하면 kubectl이 kubernetes.docker.internal 에 연결할 때 프록시 서버를 통하지 않게 된다. 
 - 참고: https://stackoverflow.com/questions/41482485/kubectl-behind-a-proxy
 
-# ReplicaSet (레플리카셋)
-- 다수의 컨테이너를 어떻게, 몇 개나 구동할 것인지를 설정할 수 있다. 
-- 레플리카셋에 설정된 컨테이너 개수는 항상 떠 있는 상태일 것을 kubernetes 가 담보해준다. 
-- 예를 들어, 어떤 컨테이너가 어떤 이유로 다운되었을 경우, 새로운 컨테이너를 구동해준다. 
-- 실제 업무에서는 Deployment를 쓰지 레플리카셋은 잘 쓰이지 않는 것 같다. 
 
-# Deloyment
-- ReplicaSet과 설정 항목이 비슷하다. 
-- 레플리카셋과 비교해서 strategy (갱신전략), revisionHistory, paused, progressDeadlineSeconds 등을 추가로 설정가능하다. 
-- 
+
+# 중요개념
+## 네임스페이스
+- kubernetes 내에서는 오브젝트 사이에 동일한 이름을 쓸 수 없다. (이름이 충돌되면 안된다.)
+- 이름 충돌을 해결하기 위해서 네임스페이스가 있다. 
 
 # 참고링크 
 - 쿠버네티스란 (일본어): https://kubernetes.io/ja/docs/concepts/overview/what-is-kubernetes/ 
