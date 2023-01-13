@@ -71,7 +71,7 @@ Content-Length: 2
 POST 요청의 XML 바디 부분에 XXE 공격 페이로드를 넣으면 될 것 같다. 
 
 ## 1차 시도 
-https://github.com/payloadbox/xxe-injection-payload-list
+[XXE 페이로드](https://github.com/payloadbox/xxe-injection-payload-list){:target="_blank"}
 를 참고해서 
 `<!DOCTYPE replace [<!ENTITY ent SYSTEM "file:///etc/shadow"> ]>` 를 추가해서 보내봤다. 
 
