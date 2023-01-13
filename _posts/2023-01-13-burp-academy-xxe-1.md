@@ -8,8 +8,12 @@ toc: true
 
 # 개요
 - 문제명: Exploiting XXE using external entities to retrieve files
+- XXE (XML external entity) 공격에 대한 실습 문제이다. 
+- XXE의 기본적인 패턴 중 하나의 시스템 파일 읽기를 실습할 수 있다. 
 - 주소: https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-retrieve-files
 - 난이도: Apprentice (Easy)
+- XXE에 대한 기본적인 내용은 [여기](https://portswigger.net/web-security/xxe){:target="_blank"} 에서 확인가능하다. 
+
 
 ## 랩설명
 - Check stock 기능은 XML 입력을 파싱한 결과를 (에러를 포함해서) 돌려준다고 한다. 
@@ -83,7 +87,7 @@ https://github.com/payloadbox/xxe-injection-payload-list
 200 응답이 되돌아왔다. 뭔가 잘못된 것 같다. 
 
 ## 2차 시도 
-아, 페이로드에 `&foo;` 로 출력해주는 부분이 없었다. 다음 페이로드로 시도해보자 /etc/passwd의 내용이 돌아왔다. 
+아, 페이로드에 `&foo;` 로 출력해주는 부분이 없었다. 다음 페이로드로 시도해보자 /etc/passwd의 내용을 확인할 수 있었따. 
 
 ``` 
 <!DOCTYPE test [<!ENTITY foo SYSTEM "file:///etc/passwd"> ]>
@@ -93,8 +97,8 @@ https://github.com/payloadbox/xxe-injection-payload-list
 </stockCheck>
 ```
 
+Burp Suite Repeater로 확인한 모습 
 ![Check stock기능](/images/burp-academy-xxe-1-3.png)
 
-
-
+성공! 
 ![Check stock기능](/images/burp-academy-xxe-1-2.png)
