@@ -13,7 +13,8 @@ toc: true
 
 ## 랩설명
 - Check stock 기능은 XML 입력을 파싱한 결과를 (에러를 포함해서) 돌려준다고 한다. 
-- XML external entiry 를 삽입해서 /etc/passwd 파일의 내용을 읽으면 성공이다. 
+- XML external entiry 를 삽입해서 /etc/passwd 파일의 내용을 읽으면 성공이다.   
+
 ```
 This lab has a "Check stock" feature that parses XML input and returns any unexpected values in the response.
 
