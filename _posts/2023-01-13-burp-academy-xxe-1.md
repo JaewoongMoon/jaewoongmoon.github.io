@@ -7,8 +7,9 @@ toc: true
 ---
 
 # 개요
-- Exploiting XXE using external entities to retrieve files
-- https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-retrieve-files
+- 문제명: Exploiting XXE using external entities to retrieve files
+- 주소: https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-retrieve-files
+- 난이도: Apprentice (Easy)
 
 ## 랩설명
 - Check stock 기능은 XML 입력을 파싱한 결과를 (에러를 포함해서) 돌려준다고 한다. 
@@ -44,8 +45,7 @@ Sec-Fetch-Mode: cors
 Sec-Fetch-Dest: empty
 Referer: https://0a52000f032ecba6c08c8b1900120054.web-security-academy.net/product?productId=1
 Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9,ja;q=0.8,ko;q=0.7
-Connection: close
+Accept-Language: en-US,en;q=0.9,ja;q=0.8,ko;q=0.7onnection: close
 
 <?xml version="1.0" encoding="UTF-8"?><stockCheck><productId>1</productId><storeId>1</storeId></stockCheck>
 ```
