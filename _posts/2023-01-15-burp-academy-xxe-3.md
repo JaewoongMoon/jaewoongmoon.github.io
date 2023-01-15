@@ -7,9 +7,9 @@ toc: true
 ---
 
 # 개요
-- Blind XXE 로 out-of-band 통신 공격을 하는 예제이다. 
+- 블라인드 XXE 로 out-of-band 통신을 발생시키는 것을 실습하는 문제이다. 
 - 문제 주소: https://portswigger.net/web-security/xxe/blind/lab-xxe-with-out-of-band-interaction
-- XXE 설명 주소: https://portswigger.net/web-security/xxe
+- 블라인드 XXE 설명 주소: https://portswigger.net/web-security/xxe/blind
 - 난이도: PRACTITIONER (중간)
 
 # 문제분석 
@@ -17,7 +17,7 @@ toc: true
 - XXE로 문제 서버를 외부도메인과 통신하도록  (out-of-band interaction) 하는 것이  가능하다. 
 - XXE를 통해 특정 DNS 요청을 발생시키면 될 것 같다. 
 - DNS 요청이 발생했다는 것을 알기 위해서 Burp Collaborator 서버를 사용한다. 
-- [여기](https://portswigger.net/burp/documentation/collaborator){:target="_blank"}를 보면 디폴트 Burp Collaborator 서버의 도메인은 `*.burpcollaborator.net` 또는  `*.oastify.com` 라는 것을 알 수 있다. 
+- PortSwigger사의 [Burp Collaborator 설명](https://portswigger.net/burp/documentation/collaborator){:target="_blank"}을 보면 디폴트 Burp Collaborator 서버의 도메인은 `*.burpcollaborator.net` 또는  `*.oastify.com` 라는 것을 알 수 있다. 
 
 ```
 This lab has a "Check stock" feature that parses XML input but does not display the result.
@@ -31,7 +31,9 @@ To prevent the Academy platform being used to attack third parties, our firewall
 ```
 
 # 풀이 
-이전 문제와 마찬가지로 "Check stock" 버튼 클릭시 발생하는 POST 요청의 바디 부분이 XML로 되어 있는 것을 알았다. 
+
+## XXE 가능한 곳 발견
+이전 문제들과 마찬가지로 "Check stock" 버튼 클릭시 발생하는 POST 요청의 바디 부분이 XML로 되어 있는 것을 발견했다. 
 
 ```
 POST /product/stock HTTP/1.1
