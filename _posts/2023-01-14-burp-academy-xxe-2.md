@@ -10,9 +10,9 @@ toc: true
 - XXE를 응용해서 SSRF 공격을 하는 예제이다. 
 - 문제 주소: https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-perform-ssrf
 - XXE 설명 주소: https://portswigger.net/web-security/xxe
-- 난이도: Apprentice (Easy)
+- 난이도: APPRENTICE (쉬움)
 
-# 랩설명
+# 문제분석
 - 이 랩에는 XML 인풋을 파싱해서 에러를 포함한 결과를 리턴해주는 "Check stack" 기능이 있다. 
 - 문제 서버는 EC2 메타데이터 엔드포인트를 디폴트 URL (http://169.254.169.254/) 로 돌리고 있다. 
 - 이 엔드포인트를 통해서 인스턴스에 대한 정보를 얻을 수 있다. 여기에는 민감한 정보가 포함되어 있을 수 있다. 

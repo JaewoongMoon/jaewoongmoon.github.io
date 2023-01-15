@@ -11,11 +11,11 @@ toc: true
 - XXE (XML external entity) 공격에 대한 실습 문제이다. 
 - XXE의 기본적인 패턴 중 하나의 시스템 파일 읽기를 실습할 수 있다. 
 - 주소: https://portswigger.net/web-security/xxe/lab-exploiting-xxe-to-retrieve-files
-- 난이도: Apprentice (Easy)
+- 난이도: APPRENTICE (쉬움)
 - XXE에 대한 기본적인 내용은 [여기](https://portswigger.net/web-security/xxe){:target="_blank"} 에서 확인가능하다. 
 
 
-# 랩설명
+# 문제분석
 - Check stock 기능은 XML 입력을 파싱한 결과를 (에러를 포함해서) 돌려준다고 한다. 
 - XML external entiry 를 삽입해서 /etc/passwd 파일의 내용을 읽으면 성공이다.   
 
