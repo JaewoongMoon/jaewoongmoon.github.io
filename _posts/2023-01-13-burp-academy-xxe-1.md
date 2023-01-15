@@ -15,7 +15,7 @@ toc: true
 - XXE에 대한 기본적인 내용은 [여기](https://portswigger.net/web-security/xxe){:target="_blank"} 에서 확인가능하다. 
 
 
-## 랩설명
+# 랩설명
 - Check stock 기능은 XML 입력을 파싱한 결과를 (에러를 포함해서) 돌려준다고 한다. 
 - XML external entiry 를 삽입해서 /etc/passwd 파일의 내용을 읽으면 성공이다.   
 
@@ -25,7 +25,7 @@ This lab has a "Check stock" feature that parses XML input and returns any unexp
 To solve the lab, inject an XML external entity to retrieve the contents of the /etc/passwd file.
 ```
 
-
+# 풀이 
 ## 취약점이 있는 곳 찾기
 상품 상세 페이지에서 `Check stock` 버튼이 있는 것을 찾았다. 
 
