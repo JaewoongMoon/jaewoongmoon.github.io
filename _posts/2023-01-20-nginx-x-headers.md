@@ -1,8 +1,13 @@
-
+---
+layout: post
+title: "Nginx 프록시 관련 헤더 정리"
+categories: [HTTP 헤더, Nginx]
+tags: [HTTP 헤더, Nginx, 프록시 헤더]
+toc: true
+---
 
 # 개요 
-Nginx에서 X 가 포함된 헤더는 뭐하는 헤더인지 정리해본다. 
-
+Nginx에서 `X-` 가 포함된 프록시 관련 헤더는 뭐하는 헤더인지 정리해본다. 
 주로 자주 보이는 헤더는 다음과 같은 헤더이다. 
 
 ```
