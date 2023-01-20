@@ -122,6 +122,9 @@ kubectl [command] [TYPE] [NAME]
 ## 리소스 삭제
 `kubectl delete -f [pod 파일명].yaml`
 
+## 기타
+- [공식 페이지 Cheatsheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/){:target="_blank"}를 보면 기타 여러가기 커맨드를 확인가능하다. 
+
 # Kubernetes 오브젝트 
 ## Pod 
 - 1개 또는 복수의 콘테이너를 묶어서 Pod라는 단위로 관리한다. 

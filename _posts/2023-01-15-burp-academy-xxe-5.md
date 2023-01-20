@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy 문제풀이 - Blind XXE with out-of-band interaction via XML parameter entities"
+title: "Burp Academy 문제풀이 - Exploiting blind XXE to exfiltrate data using a malicious external DTD"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, XXE]
 toc: true
