@@ -2,6 +2,7 @@ title: 문재웅의 작업실
 description: 보안 관련 기술 조사 결과나 취미, 단상등을 기록하는 블로그입니다. 
 author: Jaewoong Moon 
 avatar: /moon.JPG
+url: https://jaewoongmoon.github.io/
 
 plugins:
   - jekyll-seo-tag
