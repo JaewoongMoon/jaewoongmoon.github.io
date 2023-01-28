@@ -33,7 +33,7 @@ You can solve this lab manually in your browser, or use DOM Invader to help you.
 
 
 # 풀이
-## 프로토타입 폴루션 취약점이 있는 곳 찾기
+## 가능한 곳 찾기
 
 ![상품 검색](/images/burp-academy-prototype-pollution-1-2.png)
 
@@ -77,11 +77,11 @@ Content-Length: 3209
 (이하생략)
 ```
 
-이 요청과 응답만 보면 어디에 취약점이 있는지 잘 모르겠다. 클라이언트 측의 취약점이므로 자바스크립트 파일을 살펴보는게 좋겠다. 이 페이지를 크롬 디버거로 살펴보자. 페이지의  `searchLogger.js` 파일을 보면 다음 자바스크립트가 실행되도록 되어 있다. 페이지의 `load` 이벤트에 반응하도록 되어 있어 페이지 로드가 완료되면 `searchLogger` 함수가 이어서 실행된다. 코드를 조금 분석해본다. 
+그리고 이 페이지를 크롬 디버거로 살펴보면 응답을 받으면 `searchLogger.js` 파일의 다음 자바스크립트가 실행되도록 되어 있다. 페이지의 `load` 이벤트에 반응하도록 되어 있어 페이지 로드가 완료되면 `searchLogger` 함수가 이어서 실행된다. 코드를 조금 분석해본다. 
 
 - `searchLogger` 함수에서는 `deparam.js` 에 정의되어 있는 deparam 오브젝트를 생성하고 `config` 라는 변수에 저장해둔다. 
 - `config` 변수에 `transport_url` 라는 속성(property)이 있다면 동적으로 script 태그를 만들고 이 태그의 `src` 속성을 `transport_url` 의 값으로 설정한다. 
-- 아마도 `transport_url` 을 XSS가 가능한 페이로드로 지정하면 문제가 풀리지 않을까 생각된다. 
+- 아마도 `transport_url` 을 XSS가 가능한 페이로드로 지정하면 문제가 풀리지 않을까 한다. 
 
 ```javascript 
 async function logQuery(url, params) {
@@ -108,7 +108,7 @@ async function searchLogger() {
 
 window.addEventListener("load", searchLogger);
 ```
-그리고 `deparam.js` 의 코드는 대략 다음과 같다. 실제로 프로토타입 폴루션 취약점이 있는 부분이 코드 같다. URL에 지정된 파라메터의 값을 자바스크립트의 오브젝트에 무조건적으로 설정해주는 부분같다. (`__proto__` 와 같은 위험한 key가 사용되고 있는지를 체크해주는 부분이 없다.)
+그리고 `deparam.js` 의 코드는 대략 다음과 같다. 실제로 프로토타입 폴루션 취약점이 있는 부분이 코드 같다. URL에 지정된 파라메터의 값을 자바스크립트의 오브젝트에 무조건적으로 설정해주는 부분같다. (`__proto__` 와 같은 위험한 key가 사용되고 있는지를 체크해주는 부분이 없다.  )
 
 ![deparam.js](/images/burp-academy-prototype-pollution-1-1.png)
 
@@ -116,17 +116,12 @@ window.addEventListener("load", searchLogger);
 ## 1차 시도
 [XXS 페이로드 리스트](https://github.com/payloadbox/xss-payload-list){:target="_blank"} 를 보면, `<script src="javascript:alert(1)">` 페이로드가 있다. 이 것을 사용해보자. 
 
-페이로드를 조금 수정해서 다음과 같이 만들었다.  
 
-```
-?search=eeess&__proto__[transport_url]=javascript:alert(1)
-```
-
-이 페이로드가 실행되면 script.src 의 값이 `alert(1)` 로 지정될 것이다. 그리고 alert창이 나타날 것으로 생각된다. 테스트해보았다. 
+`?search=eeess&__proto__[transport_url]=javascript:alert(1)` 페이로드를 지정하면 script.src 의 값이 alert(1) 테스트해보았다. 
 
 결과는 실패. alert 창이 나타나지 않았다. 흠...
 
-크롬 디버거로 브레이크포인트를 찍어서 값을 확인해본다. transport_url에 값이 잘 들어간 것을 확인했다. 이 것으로 일단 프로토타입 폴루션자체는 성공한 것을 알 수 있다. __proto__ 키를 이용해서 오브젝트의 특정 키에 값을 주입하는 것 자체는 성공했다. 
+크롬 디버거로 브레이크포인트를 찍어서 값을 확인해본다. params 오브젝트의 프로토타입의 속성 transport_url에 값이 지정된 것을 확인했다. 이 것으로 일단 프로토타입 폴루션자체를 성공한 것을 알 수 있다. __proto__ 키를 이용해서 오브젝트의 특정 키에 값을 주입했다. 
 
 ![프로톹타입 폴루션 확인](/images/burp-academy-prototype-pollution-1-3.png)
 
@@ -135,15 +130,9 @@ window.addEventListener("load", searchLogger);
 ![UNKNOWN_URL_SCHEME 에러](/images/burp-academy-prototype-pollution-1-4.png)
 
 ## 2차 시도 
-페이로드에서 `javscript` 를 없애고 다음과 같이 만들었다. 
+페이로드에서 `javscript` 를 없애고 다음과 같이 만들었다. `?search=eeess&__proto__[transport_url]=alert(1)` 실행해보니 이번에는 404 응답 에러가 발생했다. 
 
-```
-?search=eeess&__proto__[transport_url]=alert(1)
-``` 
-
-실행해보니 이번에는 404 응답 에러가 발생했다. 
-
-그리고 이 떄 Burp Proxy 이력을 보니 다음과 같은 통신이 발생한 것을 확인했다. 
+그리고 이 떄 Burp Proxy 이력을 보니 다음과 같은 통신이 발생한 것을 확인했다. `<script src="alert(1)">` 이 삽입되니, `GET /alert(1)` 요청이 실행된 것이다. src에 바로 alert 코드를 쓰는 것은 답이 아닌 것 같다. 다른 페이로드를 찾아본다. 
 
 ```
 GET /alert(1) HTTP/1.1
@@ -172,16 +161,10 @@ Content-Length: 11
 "Not Found"
 ```
 
-`<script src="alert(1)">` 이 삽입되니, `GET /alert(1)` 요청이 실행된 것이다. src에 바로 alert 코드를 쓰는 것은 답이 아닌 것 같다. 다른 페이로드를 찾아본다. 
-
 ## 3차 시도 
-[XXS 페이로드 리스트](https://github.com/payloadbox/xss-payload-list){:target="_blank"} 에서 `<script src="data:text/javascript,alert(1)"></script>` 페이로드를 발견했다. 왠지 이 것을 쓰면 HTTP 통신이 발생하지 않고 script가 실행될 것 같은 예감이 든다. 다음 페이로드로 테스트해본다. 
+[XXS 페이로드 리스트](https://github.com/payloadbox/xss-payload-list){:target="_blank"} 에서 `<script src="data:text/javascript,alert(1)"></script>` 페이로드를 발견했다. 왠지 이 것을 쓰면 HTTP 통신이 발생하지 않고 script가 실행될 것 같은 예감이 든다. 테스트해본다. 
 
-```
-?search=eeess&__proto__[transport_url]=data:text/javascript,alert(1)
-```
-
-삽입된 페이로드를 브레이크 포인트로 확인해본다. transport_url 속성에 `data:text/javascript,alert(1)` 이 삽입된 것을 확인했다. 브레이크 포인트를 중지하고 계속 진행시킨다. 
+삽입된 페이로드를 브레이크 포인트로 확인해본다. `data:text/javascript,alert(1)` 이 삽입된 것을 확인했다. 브레이크 포인트를 중지하고 계속 진행시킨다. 
 
 ![삽입된 페이로드 확인](/images/burp-academy-prototype-pollution-1-5.png)
 
