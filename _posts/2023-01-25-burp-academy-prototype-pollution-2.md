@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy 문제풀이 - DOM XSS via an alternative prototype pollution vector"
+title: "Burp Academy-Prototype Pollution 두번째 문제:DOM XSS via an alternative prototype pollution vector"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, Prototype Pollution]
 toc: true

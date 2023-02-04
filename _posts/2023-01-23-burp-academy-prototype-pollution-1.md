@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy 문제풀이 - DOM XSS via client-side prototype pollution"
+title: "Burp Academy-Prototype Pollution 첫번째 문제:DOM XSS via client-side prototype pollution"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, Prototype Pollution]
 toc: true
