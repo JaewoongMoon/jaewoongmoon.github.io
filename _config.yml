@@ -1,7 +1,8 @@
-title: 보안 취약점, 게임, 해킹 랩 
-description: 주로 보안 취약점, 게임, 해킹 관련 기술을 연구하는 블로그입니다. 
+title: 문재웅의 작업실
+description: 보안 관련 기술 조사 결과나 취미, 단상등을 기록하는 블로그입니다. 
 author: Jaewoong Moon 
 avatar: /moon.JPG
+url: https://jaewoongmoon.github.io/
 
 plugins:
   - jekyll-seo-tag
@@ -11,7 +12,7 @@ plugins:
 
 paginate: 10
 
-skin: midnight
+# skin: midnight
 
 # Uncomment the below line and set the tracking ID for enabling Google Analytics
 # 
@@ -38,5 +39,5 @@ social:
   name: Jaewoong Moon
   links:
     - https://github.com/JaewoongMoon/
-# google_site_verification: u4WXQl0Eu66rsQo2kRdCNx
+google_site_verification: 85b527edf4ba1c18
 lang: ko
