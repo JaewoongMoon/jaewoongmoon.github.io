@@ -34,7 +34,7 @@ To prevent the Academy platform being used to attack third parties, our firewall
 ## XXE 가능한 곳 발견
 이전 문제들과 마찬가지로 "Check stock" 버튼 클릭시 발생하는 POST 요청의 바디 부분이 XML로 되어 있는 것을 발견했다. 
 
-```
+```http
 POST /product/stock HTTP/1.1
 Host: 0aa30080038a706fc050bdf600870025.web-security-academy.net
 Cookie: session=K72hbA7QeOP5dlNcdWpw31bGKKqWACeB
@@ -61,7 +61,7 @@ Connection: close
 </stockCheck>
 ```
 
-```
+```http
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 Connection: close
@@ -83,7 +83,7 @@ Content-Length: 3
 
 호오... 엔터티는 보안 이유상 사용하지 못하도록 되어 있다고 한다.   
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close

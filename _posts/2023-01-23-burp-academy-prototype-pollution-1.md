@@ -39,7 +39,7 @@ You can solve this lab manually in your browser, or use DOM Invader to help you.
 
 - 검색어를 입력하고 "Search" 버튼을 클릭하면 GET 요청이 발생하고 URL로 파라메터가 전달된다. 
 
-```
+```http
 GET /?search=aaaa HTTP/1.1
 Host: 0a5300b3032c5f25c2643a44000000f1.web-security-academy.net
 Cookie: session=BRR4p1oZFSX1e1MEJ8r7OkjZb4KVjCFB
@@ -60,7 +60,7 @@ Connection: close
 ```
 
 그리고 다음과 같이 평범해보이는 200 응답이 회신된다. 
-```
+```http
 HTTP/1.1 200 OK
 Content-Type: text/html; charset=utf-8
 Connection: close
@@ -134,7 +134,7 @@ window.addEventListener("load", searchLogger);
 
 그리고 이 떄 Burp Proxy 이력을 보니 다음과 같은 통신이 발생한 것을 확인했다. `<script src="alert(1)">` 이 삽입되니, `GET /alert(1)` 요청이 실행된 것이다. src에 바로 alert 코드를 쓰는 것은 답이 아닌 것 같다. 다른 페이로드를 찾아본다. 
 
-```
+```http
 GET /alert(1) HTTP/1.1
 Host: 0a1800e104c74374c2bf71be00a4002b.web-security-academy.net
 Cookie: session=9YMbSxCjJHulZ7ZPfUBnGvoiWivMSkpj

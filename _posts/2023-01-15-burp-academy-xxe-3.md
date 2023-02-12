@@ -35,7 +35,7 @@ To prevent the Academy platform being used to attack third parties, our firewall
 ## XXE 가능한 곳 발견
 이전 문제들과 마찬가지로 "Check stock" 버튼 클릭시 발생하는 POST 요청의 바디 부분이 XML로 되어 있는 것을 발견했다. 
 
-```
+```http
 POST /product/stock HTTP/1.1
 Host: 0aa9007d0461bff2c00aaee6002e00b7.web-security-academy.net
 Cookie: session=gBA3k6jT5f5DjHzCRpxVSxXg72sbIc5E
@@ -72,7 +72,7 @@ HTTPS 요청 하는 대상을 burpcollaborator.net의 임의의 서브도메인 
 응? `XML parsing error` 가 발생했다. XML 형식이 잘못된 건가?   
 생각해보니 블라인드 XXE 문제이므로 XXE결과를 HTTP 응답에 포함시킬 필요는 없을 것 같다. 문제 서버가 외부로 DNS 요청을 하도록 만들기만 하면 되는 것이다. 
 
-```
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close
@@ -93,7 +93,8 @@ Content-Length: 19
 ```
 
 평범한 응답이 돌아온다. 
-```
+
+```http
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 Connection: close

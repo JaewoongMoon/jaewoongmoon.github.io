@@ -47,7 +47,8 @@ To prevent the Academy platform being used to attack third parties, our firewall
 ```
 
 안된다. XML 파싱에러가 발생했다. 
-```
+
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close
@@ -81,7 +82,8 @@ Content-Length: 19
 ```
 
 보안 이유 때문에 Entity 는 사용할 수 없다는 응답이 돌아왔다. 
-```
+
+```http
 HTTP/1.1 400 Bad Request
 Content-Type: application/json; charset=utf-8
 Connection: close

