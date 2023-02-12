@@ -35,7 +35,9 @@ sudo yum install python36-devel
 greenlet은 멀티프로세싱에 필요한 코루틴을 처리하기 위한 라이브러리라고 한다.   
 grequest를 설치하면 greenlet도 같이 설치가 되는데 설치도중 다음과 같은 에러가 발생했다. 
 
-```/usr/include/c++/4.8.5/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard. This support is currently experimental, and must be enabled with the -std=c++11 or -std=gnu++11 compiler options.``` 
+```
+/usr/include/c++/4.8.5/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO C++ 2011 standard. This support is currently experimental, and must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+``` 
 
 메세지를 분석해보면 gcc를 사용해서 빌드하려고 하는데 std 버전을 11이상인 것으로 지정해야 한다는 것 같다. 인터넷을 검색해보니 gcc 버전이 낮은 것이 원인인 것 같다. 내 경우엔 설치되어 있는 gcc 버전이 4.8.5였다. yum list 로 확인해보니 gcc64버전도 설치가능한 것을 알 수 있었다. gcc64를 설치한 후에 다시 grequests 설치를 시도하자 이상없이 설치가 완료되었다. 
 
