@@ -30,3 +30,5 @@ mongo
 16 MB
 ```
 
+# 윈도우즈에서 mongo 셸을 실행하고 싶을 때 
+`C:\Program Files\MongoDB\Server\5.0\bin\mongo.exe` 를 실행한다. 
