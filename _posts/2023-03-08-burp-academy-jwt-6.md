@@ -9,7 +9,6 @@ toc: true
 # 개요
 - JWT(JSON Web Token) 취약점 여섯번째 문제이다. 
 - `kid`파라메터를 통해 자신이 서명한 JWT를 사용해서 인증을 우회하는 문제이다. 
-- 일단 이것으로 2023년 3월 시점의 JWT문제는 전부 다뤘다. 
 - JWT 취약점 설명 주소: https://portswigger.net/web-security/jwt
 - 문제 주소: https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-kid-header-path-traversal
 - 난이도: PRACTITIONER (중간)
@@ -102,7 +101,7 @@ JWT Editor Keys 탭에서 New Symmetric Key 버튼을 누른다. 일단 Generate
 ![성공](images/burp-academy-jwt-6-success.png)
 
 
-### 궁금점 및 중요한 포인트를 다시 확인
+## 궁금점 및 중요한 포인트를 다시 확인
 그런데 반드시 `../../../../../../../dev/null`여야만 할까? 즉, `../`가 정확히 7개 붙은 모습이여야만 할까?    
 `../../../../../../../dev/null`에서 `../`를 삭제하고 테스트해도 성공했다. 즉, 정확히 `../`가 몇 개있어야 된다는 게 아니라 충분한 양이 있으면 성공하는 것 같다.    
 

@@ -1,8 +1,8 @@
 ---
 layout: post
 title: "파이썬 대량 HTTP요청 라이브러리 - grequests 사용법"
-categories: [보안취약점, Burp Academy]
-tags: [보안취약점, Burp Academy, JWT취약점]
+categories: [프로그래밍, 파이썬]
+tags: [프로그래밍, 파이썬]
 toc: true
 ---
 
