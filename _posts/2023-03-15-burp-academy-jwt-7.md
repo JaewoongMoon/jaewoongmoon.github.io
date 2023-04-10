@@ -50,7 +50,7 @@ token = request.getCookie("session");
 verify(token, publicKey);
 ```
 
-이 경우에, 서버는 HS256로 서명된 토큰이어도 공개키를 사용해 검증하게 된다. 즉, 공격자가 공개키를 사용해 HS256 알고리즘으로 토큰을 서명하고 서버는 동일한 공개키로 서명을 검증하게 된다. 따라서 JWT검증을 통과할 수 있다.
+이 경우에, 서버는 대칭키를 사용하는 HS256로 서명된 토큰이어도 공개키를 사용해 검증하게 된다. 즉, 공격자는 공개키를 사용해 HS256 알고리즘으로 토큰을 서명하고 서버는 동일한 공개키로 서명을 검증하게 된다. 따라서 JWT검증을 통과할 수 있다! 
 
 ## 알고리즘 컨퓨전 공격 수행하기 (Performing an algorithm confusion attack)
 
@@ -77,7 +77,7 @@ verify(token, publicKey);
 }
 ```
 
-- 혹시 공개키가 공개되어 있지 않아도, 이미 존재하는 토큰으로부터 추출하는 방법도 있다. 
+- 혹시 공개키가 공개되어 있지 않아도, 이미 존재하는 토큰으로부터 추출하는 방법도 있다. (이건, 다음 문제에서 다룬다.)
 
 
 ### Step 2 - 공개키를 적절한 포맷으로 변환(Convert the public key to a suitable format)
@@ -111,7 +111,7 @@ To solve the lab, first obtain the server's public key. This is exposed via a st
 You can log in to your own account using the following credentials: wiener:peter
 ```
 
-- 이전 문제들과 마찬가지로 wiener유저로 로그인한 뒤 JWT를 관리자용으로 변조, carlos유저를 삭제하면 문제가 풀린다. 
+그러면 이제 실제로 문제를 풀어보자. 이전 문제들과 마찬가지로 wiener유저로 로그인한 뒤 JWT를 관리자용으로 변조, carlos유저를 삭제하면 문제가 풀릴 것 같다. 
 
 # 풀이
 ## 정상적인 크레덴셜로 로그인 
@@ -152,7 +152,7 @@ LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFN
 ```
 
 다시 JWT Editor Keys탭으로 돌아가서 New Symmetric Key 를 클릭한다.   
-(위 과정에서 얻은 공개키를 대칭키로 만들기 위해 필요한 과정이다.)
+(위 과정에서 얻은 공개키를 대칭키로 사용하도록 하기 위해 필요한 과정이다.)
 
 다이얼로그에서 Generate 버튼을 눌러서 새로운 키를 JWK 포맷으로 생성한다. 
 
@@ -166,7 +166,7 @@ LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUlJQklqQU5CZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFN
 키를 보존한다. 
 
 ### alg헤더 알고리즘 변경 
-JWS 헤더의 알고리즘을 `RS256`에서 `HS256`로 바꾼다. 
+Reapeater의 JSON Web Token탭에서 JWS 헤더의 알고리즘을 `RS256`에서 `HS256`로 바꾼다.
 
 
 ### 재서명 

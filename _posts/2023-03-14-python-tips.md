@@ -33,6 +33,16 @@ dir_name = os.path.dirname(__file__)
 # 날짜 관련
 ## 리눅스 에포크 타임을 날짜로 변환하고 싶을 때 
 - 로컬 시간(프로그램이 실행되는 머신이 위치하고 있는 시간대)으로 변환하고 싶으면 datetime의 `fromtimestamp`메서드를 사용한다. 
+- 주의점: `fromtimestamp`는 리눅스 서버의 date설정을 따라간다. 즉, 리눅스 서버의 시간이 UTC로 설정되어 있으면 UTC시간으로 출력된다. 
+
+이 시간을 변경하고 싶으면 다음 명령어를 참고한다. 
+
+```sh
+sudo cat /etc/localtime
+sudo rm /etc/localtime
+sudo ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+```
+
 - UTC시간으로 변경하고 싶다면 `utcfromtimestamp`메서드를 사용한다. 
 - 사용예는 다음과 같다. 
 
