@@ -8,7 +8,8 @@ toc: true
 
 
 # 개요 
-AWS의 EKS를 사용하는 방법을 정리해둔다.
+- AWS의 EKS를 사용하는 방법을 정리해둔다.
+- 컴퓨팅 엔진은 EC2를 사용한다. 
 
 # 전제조건
 - 최신버전의 AWS CLI가 설치되어 있어야 한다. 
@@ -69,7 +70,7 @@ cat ~/.kube/config
 kubectl get node
 ```
 
-만약 다음과 같은 에러가 발생한다면 AWS CLI나 kubectl버전이 낣은 것이어서 그렇다. 양쪽 모두 최신 버전을 설치한다. 그리고 다시 한번더 `aws eks update-kubeconfig` 커맨드를 실행해서 설정을 업데이트 한다. 
+만약 다음과 같은 에러가 발생한다면 AWS CLI나 kubectl버전이 낡은 것이어서 그렇다. 양쪽 모두 최신 버전을 설치한다. 그리고 다시 한번더 `aws eks update-kubeconfig` 커맨드를 실행해서 설정을 업데이트 한다. 
 
 ```
 error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
@@ -79,10 +80,13 @@ error: exec plugin: invalid apiVersion "client.authentication.k8s.io/v1alpha1"
 kubectl 을 사용해서 원하는대로 쿠버네티스 리소스를 만든다. 
 
 ## 작업이 끝난 후 삭제 작업
-쿠버네티스 리소스와 클러스터를 각각 삭제한다. 
+웹 서버와 같이 항상 서비스해야 하는 경우가 아닌 경우라면 사용한 자원은 삭제하는 것이 좋다.    
+쿠버네티스 리소스와 클러스터를 각각 삭제할 필요가 있다. 
 
 ### 쿠버네티스 리소스 삭제
 먼저 사용이 끝난 쿠버네티스 리소스를 kubectl 을 사용해서 삭제한다. 
+
+ex) kubectl delete pod/{MY_POD}
 
 ### 클러스터 삭제
 - 아래 명령으로 클러스터를 삭제한다. 

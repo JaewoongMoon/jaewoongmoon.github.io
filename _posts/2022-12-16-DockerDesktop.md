@@ -6,6 +6,9 @@ tags: [프로그래밍, 컨테이너, Docker, DockerDesktop]
 toc: true
 ---
 
+# 개요
+Docker Desktop 사용시의 유용한 팁을 정리해둔다. 
+
 # Docker Desktop 구동시 필요하지 않은 컨테이너는 자동으로 구동되지 않도록 하기 
 - Docker Desktop 구동시 자동으로 함께 시작되는 컨테이너들이 있다. 
 - 자동으로 시작되지 않도록 하고 싶을 때 다음 방법을 참고한다 .
@@ -21,3 +24,34 @@ toc: true
 ## STEP 3. Docker Desktop 을 재시작 
 - Docker Desktop 을 재시작한다. 
 - 그러면 더 이상 자동으로 컨테이너가 시작되지 않는 것을 확인할 수 있다. 
+
+
+# vmmem 프로세스가 메모리를 너무 잡아먹을 때 
+다음 명령으로 셧다운한다. (자동으로 재부팅된다.)
+
+```
+wsl --shutdown
+```
+
+참고: https://www.minitool.com/news/vmmem-high-memory.html
+
+
+# WSL 관련
+## 현재 Windows가 WSL로 운용되는지 WSL2로 운용되고 있는지 확인하는 방법
+
+다음 명령을 쳐본다. 
+
+```sh
+wsl -l -v
+```
+
+다음과 같이 나오면 WSL2인 것이다. 
+
+```sh
+C:\windows\system32>wsl -l -v
+  NAME                   STATE           VERSION
+* docker-desktop-data    Stopped         2
+  docker-desktop         Stopped         2
+```
+
+
