@@ -34,7 +34,7 @@ Note that using state or nonce protection does not necessarily prevent these att
 # 랩설명: OAuth account hijacking via redirect_uri
 - 이 랩은 소셜 미디어 계정(OAuth)을 사용해서 로그인할 수 있는 기능이 있다. 
 - exploit서버를 이용해서 관리자 유저의 Authorization Code 를 훔친다. 
-- 훔친 코드를 사용해서 관리자로 로그인한 후, Calors 유저를 삭제하면 문제가 풀린다. 
+- 훔친 코드를 사용해서 관리자로 로그인한 후, Calros 유저를 삭제하면 문제가 풀린다. 
 
 ```
 This lab uses an OAuth service to allow users to log in with their social media account. A misconfiguration by the OAuth provider makes it possible for an attacker to steal authorization codes associated with other users' accounts.

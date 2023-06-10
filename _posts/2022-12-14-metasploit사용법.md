@@ -18,7 +18,7 @@ curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/t
 - webservice는 선택이다. no를 선택했다. 
 
 ```sh
-msfconsole
+/opt/metasploit-framework/bin/msfconsole
 
  ** Welcome to Metasploit Framework Initial Setup **
     Please answer a few questions to get started.
@@ -80,6 +80,8 @@ search -h
 search cve:2022 platform:linux type:exploit
 search aka:heartbleed
 search name:openssl 
+search type:exploit -s date # exploit을 공개일을 기준으로 정렬한다. 
+search type:exploit -s date -r # exploit을공개일을 기준으로 역순으로 정렬한다.  
 ```
 
 ## 검색한 DB 사용하기
@@ -134,6 +136,14 @@ View the full module info with the info, or info -d command.
 
 msf6 auxiliary(scanner/ssl/openssl_heartbleed) >
 ```
+
+## 검색한 모듈 내용 보기
+edit명령으로 exploit 코드를 볼 수 있다. 
+
+```sh
+msf6 auxiliary(scanner/ssl/openssl_heartbleed) > edit
+```
+
 
 ## 스캔(공격) 수행하기
 - set 명령으로 필요한 설정값을 설정한 후에 exploit 명령으로 스캔을 수행한다. 
