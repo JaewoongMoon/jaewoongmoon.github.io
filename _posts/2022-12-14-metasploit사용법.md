@@ -82,6 +82,7 @@ search aka:heartbleed
 search name:openssl 
 search type:exploit -s date # exploit을 공개일을 기준으로 정렬한다. 
 search type:exploit -s date -r # exploit을공개일을 기준으로 역순으로 정렬한다.  
+search cve:2019 1458 # cve-2019-1458 을 찾는다. 
 ```
 
 ## 검색한 DB 사용하기

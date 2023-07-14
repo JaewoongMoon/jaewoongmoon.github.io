@@ -4,6 +4,7 @@ title: "Burp Academy-인증(Authentication) 취약점: Broken brute-force protec
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, OAuth취약점]
 toc: true
+last_modified_at: 2023-07-04 09:04:00 +0900
 ---
 
 # 개요
