@@ -4,6 +4,7 @@ title: "Metasploit 프레임워크 설치 및 사용법"
 categories: [보안, 취약점스캐너]
 tags: [취약점, 스캐너, metasploit]
 toc: true
+last_modified_at: 2023-08-09 17:02:00 +0900
 ---
 
 # Metasploit 설치 및 셋업
@@ -138,7 +139,7 @@ View the full module info with the info, or info -d command.
 msf6 auxiliary(scanner/ssl/openssl_heartbleed) >
 ```
 
-## 검색한 모듈 내용 보기
+## 검색한 모듈의 코드 보기
 edit명령으로 exploit 코드를 볼 수 있다. 
 
 ```sh
@@ -146,7 +147,17 @@ msf6 auxiliary(scanner/ssl/openssl_heartbleed) > edit
 ```
 
 
-## 스캔(공격) 수행하기
+## 취약한지 체크하기
+- check 커맨드로 취약한지 체크할 수 있다. (exploit까지는 실행하지 않는다.)
+- 모듈에서 check 옵션을 지원하는 경우에 사용가능하다. 
+
+```sh
+set RHOSTS xxx.com 
+set RPORT 443
+check 
+```
+
+## exploit(공격) 수행하기
 - set 명령으로 필요한 설정값을 설정한 후에 exploit 명령으로 스캔을 수행한다. 
 
 ```sh

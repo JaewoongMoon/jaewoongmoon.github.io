@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy-CORS 취약점: Exploiting cross-site scripting to steal cookies"
+title: "Burp Academy-XSS 취약점: Exploiting cross-site scripting to steal cookies"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, XSS취약점]
 toc: true
