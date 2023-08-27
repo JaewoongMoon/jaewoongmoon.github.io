@@ -146,6 +146,20 @@ edit명령으로 exploit 코드를 볼 수 있다.
 msf6 auxiliary(scanner/ssl/openssl_heartbleed) > edit
 ```
 
+## 해당 모듈에서 사용가능한 페이로드 확인하기
+show payloads 명령으로 사용가능한 페이로드를 볼 수 있다. 
+
+```sh
+msf6 auxiliary(scanner/ssl/openssl_heartbleed) > show payloads
+```
+
+## 해당 모듈이 스캔(또는 공격)가능한 시스템 종류 확인하기
+- show targets 명령으로 어떤 시스템을 스캔(또는 공격)가능한지 볼 수 있다. 
+- exploit모듈에서만 지원하는 기능으로 보인다. 
+
+```sh
+msf6 exploit(windows/smb/ms08_067_netapi) > show targets
+```
 
 ## 취약한지 체크하기
 - check 커맨드로 취약한지 체크할 수 있다. (exploit까지는 실행하지 않는다.)
@@ -179,6 +193,17 @@ msf >
 ```sh
 msfupdate 
 ```
+
+
+# 메타스플로잇 개념
+## 익스플로잇
+공격자나 테스터가 시스템, 어플리케이션, 서비스 내의 결함을 교묘하게 이용하는 것을 의미한다. 
+
+## 페이로드 
+페이로드는 타겟 시스템에게 실행시키고 싶은 코드를 의미한다. 예를들면 리버스 셸같은 것이다. 
+
+## Stager
+
 
 # 참고 
 - https://docs.rapid7.com/metasploit/installing-the-metasploit-framework/
