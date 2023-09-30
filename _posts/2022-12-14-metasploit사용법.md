@@ -100,9 +100,16 @@ use auxiliary/scanner/ssl/openssl_heartbleed
 msf6 auxiliary(scanner/ssl/openssl_heartbleed) >
 ```
 
-- 어떤 옵션이 사용가능한지 보기위해 show options를 사용한다. 
-- 또는 info 커맨드를 사용해도 된다. 
-- Required 필드는 필수로 설정해야 하는 값이다 (입력하지 않으면 기본값이 사용되는 것 같다).
+## 선택한 모듈의 기본 정보 보기
+- show info 커맨드를 사용하면 해당 모듈에 대한 기본정보(누가 작성했는지, 어떤 옵션이 사용가능한지, 어떤 곳을 레퍼런스로 사용했는지 등)을 볼 수 있다. 
+
+```sh
+msf6 auxiliary(scanner/ssl/openssl_heartbleed) > show info
+```
+
+## 선택한 모듈에서 사용가능한 옵션보기 
+- 사용가능한 옵션만을 보고 싶으면 show options를 사용한다. 
+- Required 컬럼이 yes로 되어있으면 필수로 설정해야 하는 값이다 (입력하지 않으면 기본값이 사용되는 것 같다).
 
 ```sh
 use auxiliary/scanner/ssl/openssl_heartbleed
@@ -195,14 +202,37 @@ msfupdate
 ```
 
 
-# 메타스플로잇 개념
-## 익스플로잇
-공격자나 테스터가 시스템, 어플리케이션, 서비스 내의 결함을 교묘하게 이용하는 것을 의미한다. 
+# 메타스플로잇 용어
+## 익스플로잇(Exploit)
+- 공격자나 테스터가 시스템, 어플리케이션, 서비스 내의 결함을 교묘하게 이용하는 것을 의미한다. 
+- 익스플로잇을 이용해서 개발자가 의도하지 않은, 공격자의 의도대로 시스템을 동작시키는데 이용한다. 
 
 ## 페이로드 
-페이로드는 타겟 시스템에게 실행시키고 싶은 코드를 의미한다. 예를들면 리버스 셸같은 것이다. 
+- 페이로드는 타겟 시스템에게 실행시키고 싶은 코드를 의미한다. 예를들면 리버스 셸같은 것이다. 
 
-## Stager
+## 셸코드
+- 익스플로잇을 실행시킬 때, 페이로드로서 이용되는 명령셋이다. 통상 기계어로 적혀 있고, 많은 경우 커맨드 셸이나 Meterpreter 셸을 구동시키는 명령어를 담고 있어서 셸코드라는 이름이 붙어 있다. 
+
+## 모듈
+- 메타스플로잇 프레임워크에서 이용되는 SW이다. 
+- 공격을 실행하는데 쓰이는 exploit 모듈이나, 스캔이나 시스템 열거 등의 액션을 수행하는 auxiliary 모듈 등이 있다. 
+
+## 리스너
+- 접속을 기다리는 컴포넌트이다. 예를 들면, exploit이 수행된 시스템에서 공격측의 머신으로 접속 요청을 하는 경우가 있다. (리버스 셸등) 이럴 대 사용된다. 
+
+## 믹신(Mixin)
+- 어떤 모듈의 코드에서 포함(include)되어 사용되는 다른 모듈을 가리킨다. 예를 들어 다음 코드에서 HttpClient모듈이나 Scanner모듈, Report 모듈등이 Mixin이다. 
+
+```ruby
+class MetasploitModule < Msf::Auxiliary
+  include Msf::Exploit::Remote::HttpClient
+  include Msf::Auxiliary::Scanner
+  include Msf::Auxiliary::Report
+
+  def initialize(info = {})
+  ....
+
+```
 
 
 # 참고 

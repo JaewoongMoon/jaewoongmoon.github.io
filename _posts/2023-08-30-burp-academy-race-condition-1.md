@@ -13,6 +13,9 @@ last_modified_at: 2023-09-01 10:33:00 +0900
 - 취약점 설명페이지: https://portswigger.net/web-security/race-conditions#limit-overrun-race-conditions
 - 난이도: APPRENTICE (쉬움)
 
+# Limit Overrun
+- Limit Overrun: 어플리케이션에서 설정된 실행 횟수 제한(Limit)를 넘어서 어떤 작업을 수행하게 하는(Overrun) 공격 기법
+
 # 랩 설명
 - 이 랩에는 상품을 적정 가격이 아닌 다른 가격으로 구매할 수 있는 레이스 컨디션 취약점 있다. 
 - Lightweight L33t Leather Jacket 를 구매하는 랩이 풀린다. 
@@ -45,7 +48,8 @@ Solving this lab requires Burp Suite 2023.9 or higher.
 
 
 ## 레이스 컨디션 가능한 곳 찾기 
-- 쿠폰 적용하는 요청이 레이스 컨디션이 된다. 
+- 여러 요청을 그룹으로 묶은 뒤 "Single-packet attack" 을 수행할 수 있다. (Send 셀렉트박스에서 Send Group in parallel (single packet attack) 을 선택한다.)
+- 쿠폰 적용하는 요청이 레이스 컨디션이 되는 것을 확인할 수 있었다. 
 
 ![](/images/burp-academy-race-condition-1-3.png)
 
