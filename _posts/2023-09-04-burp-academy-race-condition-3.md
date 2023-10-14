@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy-레이스컨디션 관련 취약점: Limit overrun race conditions"
+title: "Burp Academy-레이스컨디션 관련 취약점: Multi-endpoint race conditions"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, 레이스컨디션, Race Condition]
 toc: true
