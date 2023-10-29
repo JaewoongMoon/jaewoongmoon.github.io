@@ -38,7 +38,7 @@ Hostname은 공백을 허용하지 않기 때문에 공백을 하이픈(-)등으
 
 ![하드디스크 크기 설정](/images/virtualbox-windows-xp-05.png)
 
-5. Finish를 눌러서 설정을 완료한다. 이후는 가만히 놔두면 알아서 설치가 된다. \
+5. Finish를 눌러서 설정을 완료한다. 이후는 가만히 놔두면 알아서 설치가 된다. 
 
 ![설정완료](/images/virtualbox-windows-xp-06.png)
 

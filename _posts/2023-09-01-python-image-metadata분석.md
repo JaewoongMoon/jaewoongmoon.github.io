@@ -1,14 +1,14 @@
 ---
 layout: post
 title: "파이썬으로 이미지 메타데이터 분석하기"
-categories: [포렌식, 파이썬]
-tags: [포렌식, 파이썬, 이미지, exif, 메타데이터]
+categories: [포렌식, 파이썬, VIOLENT PYTHON]
+tags: [포렌식, 파이썬, 이미지, exif, 메타데이터, VIOLENT PYTHON]
 toc: true
 last_modified_at: 2023-09-04 16:15:00 +0900
 ---
 
-
 # 개요
+- VIOLENT PYTHON 서적의 내용을 참고해서 정리한 페이지이다. 
 - 디지털 포렌식에서는 이미지를 분석할 때 교환 이미지 파일형식(Exchange Image File Format, exif)이라고 알려진 이미지의 메타데이터를 조사한다. 
 - 파이썬을 사용해서 exif 메터데이터를 확인할 수 있는 라이브러리를 조사하고 간단한 사용방법을 정리해둔다. 
 - 참고로 대부분의 이미지 파일 형식은 exif 를 포함할 수 있다고 한다. png파일 형식도 원래는 exif를 포함할 수 없었으나 2017년부터는 가능해졌다고 한다. (출처: https://stackoverflow.com/questions/9542359/does-png-contain-exif-data-like-jpg)

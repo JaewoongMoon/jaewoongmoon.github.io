@@ -1,13 +1,14 @@
 ---
 layout: post
 title: "파이썬으로 PDF 파일 메타데이터 분석하기"
-categories: [포렌식]
-tags: [포렌식, PDF, 메타데이터]
+categories: [포렌식, VIOLENT PYTHON]
+tags: [포렌식, PDF, 메타데이터, VIOLENT PYTHON]
 toc: true
 last_modified_at: 2023-09-12 17:15:00 +0900
 ---
 
 # 개요
+- VIOLENT PYTHON 서적의 내용을 참고해서 정리한 페이지이다. 
 - 유명한 해커 그룹 어나니머스가 2010년에 발표한 성명을 저장하고 있는 PDF 파일의 메타데이터를 파이썬을 사용해서 분석해본다. 
 - https://www.wired.com/images_blogs/threatlevel/2010/12/ANONOPS_The_Press_Release.pdf 에서 ANONOPS_The_Press_Release.pdf를 다운로드 받는다. 
 
