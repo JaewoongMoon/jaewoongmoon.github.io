@@ -17,12 +17,12 @@ last_modified_at: 2023-10-04 09:30:00 +0900
 - NoSQL인젝션은 크게 syntax injection과 operator injection의 두 가지 타입이 있다. 
 - syntax injection은 기존의 SQL인젝션과 비슷하다. SQL에서 쓰이는 연산자 등을 사용할 수 있다. 
 - operator injection은 NoSQL(특히 MongoDB)에서 사용되는 `$where, $ne, $in, $regex`등을 사용한 인젝션 기법이다. 
-- 이번 문제는 타이틀에서 추측하건대 이operator injection을 활용한 문제같다. 
+- 이번 문제는 타이틀에서 추측하건대 Operator injection을 활용한 문제같다. 
 
 # NoSQL 인젝션 - 쿼리 오퍼레이터를 서버로 보내는 법
 NoSQL의 쿼리 오퍼레이터를 서버로 보내는 법을 정리한다. 
 
-1. JSON 메세지로 보내는 경우,  쿼리 오퍼레이터를 중첩된 오브젝트로 보낼 수도 있다. 예를들면 `{"username":"wiener"} `대신에 `{"username":{"$ne":"invalid"}}`를 보낼 수 있다. 
+1. JSON 메세지로 보내는 경우, 쿼리 오퍼레이터를 중첩된 오브젝트로 보낼 수도 있다. 예를들면 `{"username":"wiener"} `대신에 `{"username":{"$ne":"invalid"}}`를 보낼 수 있다. 
 
 2. URL로 파라메터를 보내는 경우, `username=wiener `는 `[$ne]=invalid`로 대신해서 보낼 수 있다. 만약 이 것이 제대로 동작하지 않는다면, 다음을 시도해볼 수 있다. 
 
@@ -270,7 +270,7 @@ Accept-Language: en-US,en;q=0.9,ja;q=0.8,ko;q=0.7
 
 이번에는 200응답이고, `Invalid username or password` 라는 메세지가 돌아왔다. username 또는 password가 맞지 않다는 내용이다. password는 공백이 아닌 조건이므로 수정할 필요가 없을 것 같고... username을 좀 더 추가해봐야 겠다. 
 
-```
+```http
 HTTP/2 200 OK
 Content-Type: text/html; charset=utf-8
 Set-Cookie: session=YaKHarqH3LNk1Kpq13DG7e3gX38ROic2; Secure; HttpOnly; SameSite=None

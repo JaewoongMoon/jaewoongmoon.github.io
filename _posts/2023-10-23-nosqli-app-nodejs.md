@@ -91,11 +91,26 @@ router.get('/users', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
 
-  const user = await User.findOne({ username, password }).exec();
-
-  res.json({
-    message: `Logged in as ${user.username}`,
-  });
+  try{
+    const user = await User.findOne({ username, password }).exec();
+    if(user){
+      res.json({
+        message: `Logged in as ${user.username}`,
+      });
+    }else{
+      res.json({
+        message: `The username or password is incorrect.`,
+      });
+    }
+    
+  }
+  catch(error){
+    console.log(error);
+    res.statusCode = 500;
+    res.end(error + "");
+    
+  }
+  
 });
 
 module.exports = router;
@@ -292,16 +307,46 @@ body
 - username과 password에 이미 `$eq` 오퍼레이터가 들어가 있다. 
 
 ```js
+const express = require('express');
+
+const User = require('./user.model');
+
+const router = express.Router();
+
+router.get('/users', async (req, res, next) => {
+  return res.json({
+    users: await User.find({}).exec(),
+  });
+});
+
 router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
-  // const user = await User.findOne({ username, password }).exec(); //이전 코드 
-  const query = { username: {$eq: username}, password: { $eq: password } };
-  const user = await User.findOne(query).exec();
 
-  res.json({
-    message: `Logged in as ${user.username}`,
-  });
+  try{
+    // const user = await User.findOne({ username, password }).exec();
+    // Parameterized Query를 사용한 방어 
+    const user = await User.findOne({ username: {$eq: username}, password: { $eq: password } }).exec();
+    if(user){
+      res.json({
+        message: `Logged in as ${user.username}!~`,
+      });
+    }else{
+      res.json({
+        message: `The username or password is incorrect.`,
+      });
+    }
+    
+  }
+  catch(error){
+    console.log(error);
+    res.statusCode = 500;
+    res.end(error + "");
+    
+  }
+  
+});
 
+module.exports = router;
 });
 ```
 
