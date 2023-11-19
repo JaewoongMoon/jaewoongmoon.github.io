@@ -89,6 +89,28 @@ Hostname은 공백을 허용하지 않기 때문에 공백을 하이픈(-)등으
 
 ![스냅샷](/images/virtualbox-windows-xp-12.png)
 
+# 파일 공유 설정
+호스트 OS와 Windows XP가상머신 사이에 파일 공유를 설정하는 방법이다. 
+
+1. 게스트 확장 OS를 설치한다. 
+2. VirtualBox에서 공유 폴더를 추가해둔다. 난 `c:\virtualbox_share` 로 지정하였다. 자동 마운트도 체크해준다. 
+
+![VirtualBox 공유폴더 추가](/images/virtualbox-windows-xp-shared-folder-1.png)
+
+3. 윈도우즈 탐색기에서 Tools > Map Network Drive를 선택한다. 
+
+4. 설정창이 뜬다. 여기서 virtualBox_share를 선택해주면 된다. 그러면 윈도우즈 탐색기에서 새로운 드라이브처럼 추가된다. 여기서 파일 공유하면 된다. 
+
+참고 링크
+- https://techblog.willshouse.com/2013/01/27/connect-to-a-shared-folder-with-virtualbox-and-windows-xp/
+
+# Windows Defender 설치
+1. Windows Installer 3.1설치
+https://www.catalog.update.microsoft.com/Search.aspx?q=893803 에서  다운로드받은 Windows Installer 3.1을 Windows XP머신에 설치한다.  
+
+2. Windows Defender 설치
+https://www.majorgeeks.com/mg/getmirror/windows_defender_offline,1.html 에서 다운로드 받은 설치파일을 실행해서 설치한다. 
+
 
 # 기타 설정 방법 
 ## 파일공유 켜기 (simple file sharing)
