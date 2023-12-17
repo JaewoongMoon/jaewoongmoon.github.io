@@ -50,3 +50,60 @@ LHOST= 192.168.44.134 LPORT= 8080 -e x86/shikata_ga_nai \
 - Timestomp 툴을 사용해서 파일의 생성시간, 갱신시간등을 덮어쓰기할 수 있다. 
 - 그런데 윈도우즈에서 파일의 시간데이터를 덮어쓰는 것은 어려운 일일까?
 - [여기](https://tfl09.blogspot.com/2020/12/how-to-change-file-time-for-windows-file.html)를 보면 파워셸로 가능한 것 같다. 
+
+
+# 웹 어플리케이션 스캔 (WMAP)
+
+```sh
+load wmap
+wmap_sites -a TARGET_DOMAIN
+wmap_targets -t TARGET_URL
+wmap_targets -l
+wmap_run -t # 스캔에 사용할 수 있는 모듈을 체크하고 리스트업한다. 
+wmap_run -e # 스캔을 수행한다. 
+wmap_vulns -l # 스캔수행후 발견한 취약점 리스트를 보여준다. 
+
+``` 
+
+## 정규식 테스트 
+자바스크립트로 테스트해본다. 잘 동작하는 것 같다. 
+
+```js
+const myRe = /^((?!brute).)*$/s;
+myRe.exec('auxiliary/scanner/http/brute_dirs'); // null
+myRe.exec('auxiliary/scanner/http/soap_xml'); //결과 존재
+```
+
+## 정규식을 사용해서 사용되는 모듈 제어
+잘 동작하지 않는다. `auxiliary/scanner/http/brute_dirs` 모듈이 시간이 오래걸리기 때문에 제외시키고 싶은데 잘 안된다. 
+
+```sh
+#정규표현식으로 특정 모듈(brute문자열이 포함된모듈) 제외
+wmap_run -m ^((?!brute).)*$
+wmap_run -m /^((?!brute).)*$/s
+```
+
+
+## 기타 
+
+```sh
+help wmap # 도움말 보기
+msf6 > help wmap
+                                                                                                                                                                      
+wmap Commands                                                                                                                                                         
+=============
+
+    Command       Description
+    -------       -----------
+    wmap_modules  Manage wmap modules
+    wmap_nodes    Manage nodes
+    wmap_run      Test targets
+    wmap_sites    Manage sites
+    wmap_targets  Manage targets
+    wmap_vulns    Display web vulns
+
+
+```
+
+## 참고 
+- https://github.com/lattera/metasploit/blob/master/documentation/wmap.txt

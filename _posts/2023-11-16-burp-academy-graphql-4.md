@@ -167,3 +167,4 @@ mutation login($input: LoginInput!) {
 5. `success` 부분의 값이 true인 것을 찾아본다. 그러면 여러 쿼리 실행결과중에 하나만 true인 것을 알 수 있다. 이 쿼리의 password값을 사용해서 carlos 유저로 로그인하면 문제가 풀린다. 
 
 ![풀이 성공](/images/burp-academy-graphql-4-success.png)
+

@@ -145,13 +145,13 @@ Access-Control-Max-Age: 86400
 프리플라이트요청이 CSRF 대책으로 활용되는 것에 대한 정보는 이하의 링크에서 확인할 수 있다. 
 - https://stackoverflow.com/questions/41148282/why-doesnt-pre-flight-cors-block-csrf-attacks
 - https://portswigger.net/daily-swig/chrome-to-bolster-csrf-protections-with-cors-preflight-checks-on-private-network-requests : 크롬에서도 내부 네트워크 서버에 대한 CSRF대책으로 프리플라이트 요청을 활용하는 것 같다. 
-- https://www.apollographql.com/docs/router/configuration/csrf/ : Node.js의 GraphQL 서버인 apollo에서도 
-- 
+- https://www.apollographql.com/docs/router/configuration/csrf/ : Node.js의 GraphQL 서버인 apollo에서도 프리플라이트 요청을 활용해 CSRF 대책으로 사용한다. 
 
 
 # 프리플라이트 요청이 필요없는 경우
 - 간단한 요청(simple request)라고 불리는 요청인 경우에는 프리플라이트 요청이 발생하지 않는다. 
 - 원래부터 존재했던 HTML폼도 크로스 오리진 요청이 가능하기 때문에, HTML 폼을 사용해서 전송되는 정도(간단한 요청)면 리스크가 크게 증가하지 않는다고 판단한 것 같다. 
+- 또한 간단한 요청이 아니더라고 동일한 오리진이면 프리플라이트 요청은 발생하지 않는다. 
 
 ## 간단한 요청의 조건 
 간단한 요청의 조건은 다음 세 가지를 모두 만족하는 요청이다. 
