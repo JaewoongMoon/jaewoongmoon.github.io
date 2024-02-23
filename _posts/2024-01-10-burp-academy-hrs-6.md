@@ -4,7 +4,7 @@ title: "Burp Academy-HTTP Request Smuggling 관련 취약점: Exploiting HTTP re
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, HTTP Request Smuggling]
 toc: true
-last_modified_at: 2024-01-10 21:00:00 +0900
+last_modified_at: 2024-01-17 21:00:00 +0900
 ---
 
 # 개요
@@ -39,7 +39,8 @@ Host: vulnerable-website.com
 ```
 
 # 랩 개요
-- 이 랩은 프론트 엔드 서버와 백엔드 서버로 구성되어 있다. 프엔드서버는 chunked encoding(TE헤더)를 지원하지 않는다. 
+- 이 랩은 프론트 엔드 서버와 백엔드 서버로 구성되어 있다. 프론트 엔드서버는 chunked encoding(TE헤더)를 지원하지 않는다. 
+- 프론트엔드서버는 관리자가 아닌경우 `/admin`에 접근하지 못하게 하는 접근 제어를 실시중이다.
 - 랩을 풀려면 백엔드 서버에게 HTTP요청을 밀반입해서, 관리자 패널(`/admin`)에 접근해 carlos 유저를 삭제하면 된다. 
 
 ```
@@ -73,7 +74,7 @@ X-Forwarded-For: 127.0.0.1
 
 4. 음... Host 헤더의 앞 뒤에 `\r` 이나 `\0` 등을 넣어서도 해봤지만 안된다. 답을 본다. 
 
-5. 답을 보니 다음과 같이 스머글링 요청에 Content-Length 헤더와 바디부분이 있는 경우는 접근이 가능한 것을 알 수 있었다. (CL헤더 값이 0일 때는 안 동작한다.) 그런데 왜 동작하지는지는 모르겠다... CL헤더와 바디값이 추가된 것이 어떤 차이를 만들어낸 걸까?
+5. 답을 보니 다음과 같이 스머글링 요청에 **Content-Length 헤더와 바디부분이 있는 경우**는 접근이 가능한 것을 알 수 있었다. (CL헤더 값이 0일 때는 안 동작한다.) 그런데 왜 동작하지는지는 모르겠다... CL헤더와 바디값이 추가된 것이 어떤 차이를 만들어낸 걸까?
 
 ```http
 POST / HTTP/1.1
@@ -119,4 +120,10 @@ Cookie: session=Nj2JXsk6Y8Nzr8JMd2z0N18bLRglPmDs
 ...
 ```
 
-7. 
+7. carlos유저 삭제 요청(`/admin/delete?username=carlos`)을 스머글링요청에 지정해서 보내본다. 두번보내면 302응답(정상처리)을 확인할 수 있다. 
+
+![carlos유저 삭제 요청](/images/burp-academy-hrs-6-5.png)
+
+8. 풀이에 성공했다. 
+
+![풀이 성공](/images/burp-academy-hrs-6-success.png)

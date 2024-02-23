@@ -72,7 +72,7 @@ x=
 
 ```
 
-※ TE.CL 요청에서는 CL헤더의 값이 업데이트되지 않는 것이 중요하다. Repeater에서 Update Content-Length 옵션을 끈다. 
+※ **TE.CL 요청에서는 CL헤더의 값이 업데이트되지 않는 것이 중요하다.** Repeater에서 Update Content-Length 옵션을 끈다. 
 
 2. 요청을 보내면 왜인지 Read 타임아웃이 발생한다. 
 
