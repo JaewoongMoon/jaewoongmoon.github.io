@@ -8,7 +8,10 @@ last_modified_at: 2024-01-31 21:00:00 +0900
 ---
 
 # 개요
-- HTTP Request Smuggling 취약점 문제이다. 여기서부터는 HTTP 프로토콜2를 사용하는 서버에 대한 스머글링을 사용한다.Advanced 토픽이다. 
+- HTTP Request Smuggling 취약점 문제이다. 
+- 여기서부터는 HTTP 프로토콜2를 사용하는 서버에 대한 스머글링을 사용한다. Advanced 토픽이다. 
+- 이는 2021년 8월에 발표한 James Kettle의 [HTTP/2: The Sequel is Always Worse](https://portswigger.net/research/http2)에 기초한 내용이다. 
+- HTTP Request Smuggling 취약점 문제 13번부터 18까지 6개 문제는 이와 관련된 문제이다. 
 - 문제 주소: https://portswigger.net/web-security/request-smuggling/advanced/lab-request-smuggling-h2-cl-request-smuggling
 - 취약점 설명페이지: https://portswigger.net/web-security/request-smuggling/advanced
 - 난이도: PRACTITIONER (보통)

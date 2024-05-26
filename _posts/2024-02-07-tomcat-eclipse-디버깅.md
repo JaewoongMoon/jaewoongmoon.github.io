@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Eclipse에서 톰캣 구동환경 구축"
+title: "Eclipse에서 톰캣 디버깅 환경 구축"
 categories: [톰캣, Eclipse]
 tags: [톰캣, Eclipse]
 toc: true
@@ -51,6 +51,15 @@ toc: true
 웹 브라우저로 `http://localhost:8080/examples/servlets/servlet/HelloWorldExample`에 접근해서 브레이크 포인트를 찍은 서블릿 프로그램이 구동되도록 한다. 그러면 브레이크 포인트에서 프로그램이 멈추고 이 시점의 값들을 확인할 수 있다. 성공이다! 😀
 
 ![톰캣 디버그 결과](/images/tomcat-debug-test-result.png)
+
+
+# 기타. 로그를 Debug 모드로 구동하기 (확인중)
+conf/logging.properties 파일의 로깅 레벨을 가장 상세한 레벨인 `FINEST`로 지정하고 ant로 빌드한후 서버를 재구동해봤지만 먹히지 않았다. 다른 방법을 찾아봐야한다. 
+
+[여기](https://cwiki.apache.org/confluence/display/TOMCAT/Logging)를 참고해본다. 
+
+start-tomcat의 VM argument에 `-Djava.util.logging.config.file=${project_loc:/tomcat-8.5.x/java/org/apache/catalina/startup/Bootstrap.java}/conf/logging.properties` 를 추가했다. 이렇게 하고 톰캣을 구동하니 메세지가 출력했다. 먹히는 것 같다. 엄청 로그량이 늘었다. 
+
 
 
 # 참고 링크

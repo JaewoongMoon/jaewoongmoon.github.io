@@ -8,7 +8,7 @@ last_modified_at: 2024-02-06 21:00:00 +0900
 ---
 
 # 개요
-- HTTP Request Smuggling 취약점 문제이다. 여기서부터는 HTTP 프로토콜2를 사용하는 서버에 대한 스머글링을 사용한다.Advanced 토픽이다. 
+- HTTP Request Smuggling 취약점 문제이다. HTTP 프로토콜2를 사용하는 서버에 대한 스머글링을 사용한다.
 - 문제 주소: https://portswigger.net/web-security/request-smuggling/advanced/response-queue-poisoning/lab-request-smuggling-h2-response-queue-poisoning-via-te-request-smuggling
 - 취약점 설명페이지: https://portswigger.net/web-security/request-smuggling/advanced/response-queue-poisoning
 - 난이도: PRACTITIONER (보통)

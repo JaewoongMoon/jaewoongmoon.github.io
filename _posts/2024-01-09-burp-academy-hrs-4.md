@@ -14,7 +14,7 @@ last_modified_at: 2024-01-09 09:00:00 +0900
 - 취약점 설명페이지2: https://portswigger.net/web-security/request-smuggling/finding
 - 난이도: PRACTITIONER (보통)
 
-# 취약점 개요
+# Confirm 테크닉 개요
 - Burp Academy 에서는 HTTP Request Smuggling을 탐지하는 단계를 세 단계로 나눠서 가르치고 있다. 
 - Indentifying과 Confirming, Exploiting이 그 것이다. Indentifying은 식별, Confirming은 확신정도로 이해하면 되겠다. Exploiting은 취약점을 악용하는 단계다.
 - Indentifying에서는 타임아웃이 발생하는가를 주로 보고, Confirming에서는 실제로 HTTP요청을 밀반입해서 밀반입한 요청에 대한 HTTP응답이 돌아오는지를 본다. (따라서 오리지널 요청과 밀반입용 요청은 각각 다른 HTTP응답코드가 돌아오는 요청이어야 한다.)
@@ -50,7 +50,7 @@ To solve the lab, smuggle a request to the back-end server, so that a subsequent
 ```
 
 # 도전
-1. 취약점 설명에 있는 CL.TE Confirm용 페이로드를 그대로 사용해보자. 다음과 같이 된다. 
+1. Confirm 테크닉 개요에 있는 CL.TE Confirm용 페이로드를 그대로 사용해보자. 다음과 같이 된다. 
 
 ```http
 POST / HTTP/1.1

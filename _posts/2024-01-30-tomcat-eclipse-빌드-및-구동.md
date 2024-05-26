@@ -85,7 +85,7 @@ ant -autoproxy
 
 1. output
 - 프로젝트 루트에 생성된다. 
-- build 폴더에 톰캣 빌드 결과물이 생성된다. 
+- /output/build 폴더에 톰캣 빌드 결과물이 생성된다. 
 
 2. tomcat-build-libs
 - 빌드에 필요한 라이브러리가 `${user.home}/tomcat-build-libs`에 설치된다. (프로젝트 루트의 바깥이다.) 
@@ -112,6 +112,8 @@ ant ide-eclipse -autoproxy
 ## 프로젝트 임포트
 이클립스에서 File > Import > Existing Projects into Workspace 를 선택해서 임포트 할 수 있다. 
 
+![](/images/eclipse-tomcat-project-import.png)
+
 ## 톰캣 실행 포트 변경하기
 - 톰캣은 실행시 8005포트, 8080포트, 8009포트를 오픈한다. 이중에 사용중인 포트가 있다면 실행이 중지된다. 
 - 💢Windows 10에서는 왜인지 8005포트를 시스템 프로세스가 사용하고 있다. 이 것을 바꾸는 것은 어려워보인다. 톰캣의 8005포트를 변경하는게 나아보인다. 
@@ -121,6 +123,8 @@ ant ide-eclipse -autoproxy
 톰캣을 구동하거나 종료하는 Run설정을 Run설정에 추가하는 과정이다. 
 
 `/res/ide-support/eclipse` 폴더에 존재하는 `start-tomcat.launch` 과 `stop-tomcat.launch` 를 이클립스에서 선택한 후 마우스 오른쪽 버튼, Run as 를 선택해서 실행할 수 있다. 
+
+![](/images/eclipse-start-tomcat-run-as.png)
 
 참고로 start-tomcat.launch 파일을 보면 `tomcat-8.5.x`와 같이 경로가 들어가 있는 것을 볼 수 있다. 
 
@@ -138,10 +142,14 @@ ant ide-eclipse -autoproxy
 - 이클립스는 Ant가 빌드한 것을 인식하지 못하는 것 같다. 
 - 프로젝트 설정(Property)에서 컴파일러 버전을 버전11로 설정해준다. 
 
+![](/images/eclipse-tomcat-jdk-11-setting.png)
+
 ### Java Build Path 설정
 프로젝트 설정(Property)에서 Java Build Path를 별도로 설정해주어야 한다. 
 
 1. Source 탭에서는 기본적으로 output 폴더가 포함되어 있다. 이 부분은 삭제해준다. 
+
+![](/images/eclipse-tomcat-build-path-source.png)
 
 2. Library 탭에서는 빌드에 필요한 외부 파일을 지정해줄 필요가 있다. 
 - ant 빌드후에 생긴 `tomcat-build-libs` 폴더에 있는 모든 jar 파일과 ant 설치 폴더에 있는 `ant.jar` 파일을 build path에 지정해주어야 한다. 
@@ -155,12 +163,12 @@ ant ide-eclipse -autoproxy
 ### 번외: Eclipse에서 Ant를 쓰는 경우 Java Build Path 설정은 어떻게 되는가?
 샘플을 하나 만들어보자. [여기](https://waspro.tistory.com/237)를 보고 만들어본 바, Java Build Path는 동일했다. 프로젝트에서 Ant를 쓴다고 바뀌는 것이 아닌 것 같다. 
 
-### 이클립스 빌드 결과 
+### 이클립스 빌드 결과 파일의 위치를 조정
 - 이클립스가 빌드한 결과는 디폴트로 `\.settings\output`에 저장되도록 되어 있다. 
 - 여기서 문제가 있는데 모든 소스코드가 동일한 패키지를 기준으로 빌드된다는 점이다. 
 - 예를 들어 ant 설정파일 build.xml 내에는 webapps 폴더의 빌드 결과는 /output/build/webapps 에 저장되도록 하고 있다. (이래야 제대로 동작한다.) 
 - 그러나 이클립스의 Java Build Path 설정으로는 빌드 결과를 한곳에 때려넣는 식으로 밖에 할 수 없다. 
-- 따라서 `/webapps/examples/WEB-INF/classes/` 를 빌드하면 `/output/build/webapps/examples/WEB-INF/classes/`에 저장되는 게 아니라 `/.settings/output/` 에 저장된다. 
+- 그 결과 `/webapps/examples/WEB-INF/classes/` 를 빌드하면 `/output/build/webapps/examples/WEB-INF/classes/`에 저장되는 게 아니라 `/.settings/output/` 에 저장된다. 
 - 그 결과 톰캣에서 이 부분을 구동하려고 하면 클래스를 찾을 수 없는데요? 오류가 난다... 😑
 - 여기를 매끄럽게 연동되도록 하는 것은 찾아보면 방법이 있을 것 같으나 지금은 그냥 넘어가자. 필요하면 Ant에서 빌드한 파일을 복붙하면 해결된다. 
 

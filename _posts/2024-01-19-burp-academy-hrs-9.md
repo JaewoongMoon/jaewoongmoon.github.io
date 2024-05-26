@@ -15,7 +15,7 @@ last_modified_at: 2024-01-19 21:00:00 +0900
 - 난이도: PRACTITIONER (보통)
 
 # 취약점 개요 (Capturing other users' requests)
-- 만약 어플리케이션이 유저의 데이터를 저장하고 보여주는 기능을 가지고 있고, HTTP요청 스머글링이 가능하다면, 다른 유저를 요청 내용을 저장하는 용도로 악용될 가능성이 있다. 이 요청 내용에는 세션토큰과 같은 중요 정보도 포함된다. 
+- 만약 어플리케이션이 유저의 데이터를 저장하고 보여주는 기능을 가지고 있고, HTTP요청 스머글링이 가능하다면, (인증 정보를 포함한) 다른 유저를 요청 내용을 저장하는 용도로 악용될 가능성이 있다. 이 요청 내용에는 세션토큰과 같은 중요 정보도 포함된다. 
 - 원리는 이전문제 (프론트엔드 서버가 추가한 HTTP 헤더 내용을 노출시키는 것)와 비슷하다. 스머글링한 HTTP요청의 Content-Length 값이 스머글링 요청의 바디값보다 크면, 그 크기만큼 커넥션에서 이어지는 다른 HTTP 요청 자체가, 스머글링 요청의 바디로 취급되는 원리다. 
 - 따라서 이어지는 요청의 HTTP 요청자체가 어플리케이션에 저장되게 된다. 이를 공격자가 보고 정보를 훔치는 것이다.
 
@@ -56,7 +56,7 @@ The lab simulates the activity of a victim user. Every few POST requests that yo
 ```
 
 # 풀이 
-1. 공격 가능 포인트를 찾는다. 유저의 요청이 저장되는 부분이다. 블로그 포스트에 커멘트를 저장하는 부분이 있으므로 여기를 이용가능할 것 같다. 
+1. 공격 가능 포인트를 찾는다. 유저의 입력값이 저장되는 부분이다. 블로그 포스트에 커멘트를 저장하는 부분이 있으므로 여기를 이용가능할 것 같다. 
 
 ![공격 가능 포인트](/images/burp-academy-hrs-9-1.png)
 
@@ -92,7 +92,7 @@ csrf=61d1u1mxC1E8B2rPrruu6PjQsSrREKdV&postId=6&name=moon&email=moon%40tester.com
 
 ![Invalid Request페이지로 이동](/images/burp-academy-hrs-9-4.png)
 
-Content-Length 값이 너무 크면 타임아웃이 발생하기도 한다. 
+또한 Content-Length 값이 너무 크면 타임아웃이 발생하기도 한다. 
 
 ![타임아웃 발생](/images/burp-academy-hrs-9-5.png)
 

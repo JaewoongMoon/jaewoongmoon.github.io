@@ -9,6 +9,8 @@ last_modified_at: 2023-12-27 09:50:00 +0900
 
 # 개요
 - HTTP Request Smuggling 취약점 문제이다. 
+- 이는 2019년 8월에 발표된 James Kettle의 [HTTP Desync Attacks: Request Smuggling Reborn](https://portswigger.net/research/http-desync-attacks-request-smuggling-reborn)에 기초한 내용이다. 
+- HTTP Request Smuggling 취약점 문제 1번부터 12번까지는 이 연구에 기초한 내용이다. HTTP/1.1에서 프론트엔드 서버와 백엔드 서버가 CL헤더와 TE헤더를 사용하는 패턴이다.
 - 문제 주소: https://portswigger.net/web-security/request-smuggling/lab-basic-cl-te
 - 취약점 설명페이지: https://portswigger.net/web-security/request-smuggling
 - 난이도: PRACTITIONER (보통)
@@ -85,7 +87,7 @@ Q
 
 ![타임아웃 발생](/images/burp-academy-hrs-1-5.png)
 
-8. 그러면 이제 백엔드가 `GPOST`라는 요청을 처리하도록 만들어보자. POST는 일반적인 요청에서 들어오는 부분이 이므로 여기서 핵심은 `G` 라는 의미없는 요청을 밀입하는 것이다. 백엔드가 대기하고 있으면 안되므로 적절한 위치에 0를 넣어주어야 한다. 다음처럼 만들어 본다. 
+8. 이제 백엔드가 'GPOST' 요청을 처리하도록 해본다. POST는 HTTP 요청의 메소드 이름이다. 따라서 G라는 의미가 없는 문자열을 밀입하면 좋을 것 같다. "HTTP 요청 + G + 다음 HTTP 요청" 과 같은 이미지다. (TE 헤더에 따르는) 백엔드를 대기시키면 타임 아웃이 발생해 버리므로 탐지용 페이로드와는 다른 위치에 0\r\n\r\n을 넣을 필요가 있다. 다음과 같다. 
 
 ```http
 POST / HTTP/1.1
@@ -98,7 +100,7 @@ Content-Length: 6
 G
 ```
 
-위 요청을 보내면 어떻게 될까? CL헤더 값이 6이므로 프론트엔드는 G까지를 포함해서 백엔드에 전송할 것이다. 백엔드는 TE헤더를 보므로 G의 바로 직전까지를 하나의 요청으로 인식해서 처리할 것이다. 이 상태에서 백엔드는  `0\r\n\r\n`가 올때까지 다시 기다린다. 이 상태에서 다시 한번 동일한 요청을 보낸다. 그러면 프론트엔드는 이 요청을 백엔드에 전달하고 백엔드에서는 이미 받았던 G에, 새롭게 받은 POST ~ 부분을 합쳐서 처리한다. 즉, 백엔드 서버가 인식해서 처리하는 HTTP 요청은 다음과 같은 모양이다. 
+위 요청을 보내면 어떻게 될까? CL헤더 값이 6이므로 프론트엔드는 G까지를 포함해서 백엔드에 전송할 것이다. 백엔드는 TE헤더를 보므로 G의 바로 직전까지를 하나의 요청으로 인식해서 처리할 것이다. 백엔드에는 G가 있는 상태이다. 이 상태에서 다시 한번 동일한 요청을 보낸다. 그러면 프론트엔드는 이 요청을 백엔드에 전달하고 백엔드에서는 이미 받았던 G에, 새롭게 받은 POST ~ 부분을 합쳐서 처리한다. 즉, 백엔드 서버가 인식해서 처리하는 HTTP 요청은 다음과 같은 모양이다. 
 
 ```http
 GPOST / HTTP/1.1
@@ -117,3 +119,7 @@ Content-Length: 6
 9. 잠시 후에 풀이에 성공했다는 메세지가 나타난다.
 
 ![GPOST 처리 결과](/images/burp-academy-hrs-1-success.png)
+
+# 감상
+- 가장 기본적인 HRS 패턴인 CL.TE를 이해하기에 좋은 문제다. 
+- 프론트엔드에게는 하나의 HTTP 요청처럼 보이게 하고, 백엔드에서는 두 개의 HTTP 요청으로 처리되도록 하는 것이 기본적인 접근법이라는 것을 배웠습니다.

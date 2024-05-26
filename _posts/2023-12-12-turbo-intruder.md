@@ -133,7 +133,7 @@ def handleResponse(req, interesting):
 
 ## 궁금점
 - CL 업데이트를 원하지 않는 경우에는 어떻게 해야하지?
-
+- [여기](https://forum.portswigger.net/thread/turbo-intruder-always-updating-content-length-header-e71c199c)를 보면, `Content-Length` 헤더를 `content-length`로 바꾸는 것으로 Turbo Intruder에서 CL헤더를 업데이트하는 것을 바이패스할 수 있다고 한다. 
 
 # 참고 URL
 - Turbo Intruder 소개 https://portswigger.net/research/turbo-intruder-embracing-the-billion-request-attack
