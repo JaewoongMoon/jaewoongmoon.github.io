@@ -4,14 +4,14 @@ title: "파이썬으로 Amazon SES를 통해 메일보내기"
 categories: [파이썬, 메일전송, Amazon SES]
 tags: [파이썬, 메일전송, Amazon SES]
 toc: true
-last_modified_at: 2024-01-23 21:15:00 +0900
+last_modified_at: 2024-12-25 21:15:00 +0900
 ---
 
 # 개요
 Amazon Simple Email Service (SES)를 사용해보고 **메일 송신을 위한 설정 과정**을 정리해둔다. 
 
 # 순서
-1. SMTP settings 메뉴에서 SMTP 크레덴셜을 만들고 다운로드해둔다. CSV파일이다. 안에 SMTP 유저명과 패스워드가 적혀있다. 
+1. SMTP settings 메뉴에서 우측 상단의 "Create SMTP credentials" 버튼을 눌러서 SMTP 크레덴셜을 만들고 다운로드해둔다. CSV파일이다. 안에 SMTP 유저명과 패스워드가 적혀있다. 
 
 2. 정당한 송신자인지를 AWS에게 보여줄 필요가 있다. 이를 위해 송신측 도메인을 인증하거나 (조금 어렵다) 이메일 주소의 소유자임을 인증한다(쉽다). 이메일 주소 인증은 이메일에 링크가 도착하면 그 링크에 접근하는 것으로 소유자임을 인증한다. 
 

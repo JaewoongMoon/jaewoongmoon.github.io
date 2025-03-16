@@ -10,8 +10,12 @@ last_modified_at: 2023-09-22 14:33:00 +0900
 # 개요
 - 새로 추가된 레이스 컨디션 관련 취약점 문제이다. 
 - 문제 주소: https://portswigger.net/web-security/race-conditions/lab-race-conditions-partial-construction
-- 취약점 설명페이지: https://portswigger.net/web-security/race-conditions#limit-overrun-race-conditions
+- 취약점 설명페이지: https://portswigger.net/web-security/race-conditions#partial-construction-race-conditions
 - 난이도: EXPERT (어려움)
+
+# 취약점 개요
+
+
 
 # 문제 개요
 - 이 랩에는 계정을 등록하는 메커니즘이 있다. 
@@ -127,7 +131,7 @@ Content-Length: 2532
 
 ## 유저 등록시 다른 이메일 주소로 등록 가능할지 테스트 
 -  @ginandjuice.shop 메일로만 가입이 가능하나 이 메일 주소로 온 메일은 볼 수가 없다. 
-- 따라서 이메일을 @exploit-xxxx.exploit-server.net 로 하는 등록 요청과  @ginandjuice.shop 로 하는 요청 두 개를 동시에 보내본다. 레이스 컨디션 취약점이 있다면 가입이 될 수도 있을 것이다. 
+- 따라서 이메일을 @exploit-xxxx.exploit-server.net 로 하는 등록 요청과  @ginandjuice.shop 로 하는 요청 두 개를 동시에 보내본다. 레이스 컨디션 취약점이 있다면 @ginandjuice.shop 로의 메일이 @exploit-xxxx.exploit-server.net 로 전달될 것이다. 이를 통해 가입할 수 있을 것이다. 
 - 몇 번 테스트해본 결과  @exploit-xxxx.exploit-server.net 로는 메일이 오지 않았다. 따라서 레이스 컨디션을 사용해서 회원가입하는 것은 불가능해보인다. 
 
 
@@ -174,15 +178,15 @@ Content-Length: 0
 
 ![에러 응답 확인](/images/burp-academy-race-condition-5-3.png)
 
-파라메터를 없애면 `"Missing parameter: token"` 메세지가, 파라메터의 값만 없애면 `"Forbidden"` 메세지를 응답한다. 
+token 파라메터를 없애면 `"Missing parameter: token"` 메세지가, 파라메터의 값만 없애면 `"Forbidden"` 메세지를 응답한다. 
 
 3. 이 `Forbidden` 응답은 개발자가 값이 없는 토큰 파라메터를 보내는 것에 대한 대책으로 넣은 것으로 추측할 수 있다. 
 
-4. 다음 두 동작 사이에 작은 레이스 윈도우(race window)가 있을 가능성을 추측해본다. 
-1) 유저 등록폼을 제출하기 
-2) 새로운 등록용 토큰(token)이 DB에 저장되는 것
+4. 다음 두 동작 사이에 작은 레이스 윈도우(race window)가 있을 가능성을 생각해본다. 
+   1) 유저가 등록폼을 제출
+   2) 서버가 새로운 등록용 토큰(token)을 DB에 저장
 
-만약 그렇다면 서버측에서 유저를 confirm할 때 null 값을 가진 토큰이 정당한 토큰으로 동작하는 임시적인 서브스테이트가 있을 것을 추측할 수 있다. 
+만약 그렇다면 서버에서 유저를 confirm할 때 null 값을 가진 토큰이 정당한 토큰으로 동작하는 임시적인 서브스테이트가 있을 것을 추측할 수 있다. 
 
 5. null값과 동일한 의미를 가지는 token을 보내는 다른 방법을 생각해본다. 예를 들어 어떤 프레임워크에서는 다음과 같이 보내면 빈 배열과 동일한 의미를 가진다. 
 
@@ -213,7 +217,7 @@ Content-Length: 0
 
 5. 두 개의 요청을 순차대로, 혹은 동시에 보내보면서 서버 응답을 관찰한다. username은 한번만 등록가능하기 때문에 바꿔가면서 테스트한다. 
 
-6. confirmation 응답은 registration 응답보다 훨씬 빨리 도착하는 것을 관찰한다. 
+6. confirmation 응답은 registration 응답보다 훨씬 빨리 도착하는 것을 관찰한다. 그렇다면 순차로 보냈을 때와 동시에 보냈을 때 각 요청은 차이가 있을까?
 
 다음은 순차로 보냈을 때의 register요청에 대한 응답이다. 473 밀리초가 걸렸다. 
 
@@ -223,6 +227,7 @@ Content-Length: 0
 
 ![에러 응답 확인](/images/burp-academy-race-condition-5-6.png)
 
+
 다음은 동시에 보냈을 때의 register요청에 대한 응답이다. 707 밀리초가 걸렸다. 
 
 ![에러 응답 확인](/images/burp-academy-race-condition-5-7.png)
@@ -231,15 +236,15 @@ Content-Length: 0
 
 ![에러 응답 확인](/images/burp-academy-race-condition-5-8.png)
 
-이를 통해 confirmation 응답은 registration 응답보다 더 빠르게 도착한다는 것을 알 수 있다. 
+이를 통해 confirmation 응답은 항상 registration 응답보다 더 빠르게 도착한다는 것을 알 수 있다. 
 
-## 검증하기 (Prove the concept)
+## 개념을 증명하기 (Prove the concept)
 
-1. 서버는 유저를 일단 DB에 비활성화 상태로 만들어 두고, confirmation 요청에서 받은 token의 값과 비교한다는 것을 염두에 둔다. 
+1. 서버는 유저를 일단 DB에 비활성화 상태로 만들어서 저장하여 두고, confirmation 요청에서 받은 token의 값과 비교한다는 것을 염두에 둔다. 
 
 2. confirmation 응답은 항상 빨리 회신된다는 것을 생각하면, 이 요청은 조금 딜레이를 줘서 레이스 윈도우에 들어가도록 만들어야 한다. 
 - 아아, 드디어 알 것 같다. 여기서 레이스 윈도우는 서버가 유저를 DB에 등록하는 일, 메일에 발송할 토큰을 생성하고 DB에 저장하는 일, confirm요청에서 받은 토큰 값과 DB에 저장된 해당 유저에게 발생한 토큰 값을 비교하는 일이 겹쳐지는 시간대를 의미한다고 이해했다. 
-- 즉, 메일에 발송할 토큰을 생성하고 DB에 저장하기 전에 (아직 DB에 저장된 token칼럼 값이 null 값일 때), null토큰을 파라메터로 하는 confirm요청이 도착하면 서버가 토큰이 동일한 것으로 판단하여 유저 등록을 완료시키게 되는 원리인 것이다! 
+- **즉, 메일에 발송할 토큰을 생성하고 DB에 저장하기 전에 (아직 DB에 저장된 token칼럼 값이 null 값인 상태), null토큰을 파라메터로 하는 confirm요청이 도착하면 서버가 토큰이 동일한 것으로 판단하여 유저 등록을 완료시키게 되는 원리인 것이다!**
 
 3. `POST /register` 요청을 username 을 하이라이트한 상태에서, 마우스 오른쪽 버튼을 눌러서 Extensions > Turbo Intruder > Send to turbo intruder 를 클릭한다. 
 
@@ -259,7 +264,7 @@ Content-Length: 0
 - 총 20번 시도한다. 각 시도별로 username을 다르게 한다. 
 - 각 시도별로 동일한 gate를 사용한다. 
 - 하나의 유저 등록요청(register요청)에 대해 50번의 confirm요청을 보낸다. (레이스 윈도우에 confirm요청이 들어갈 확률을 높이기 위함이다. 버퍼오버플로우의 NOP 썰매와도 비슷한 테크닉으로 보인다.)
-- confirmationReq 문자열에는 탭이 들어가지 않도록 한다. 예를 들어, Host 헤더앞에 탭이 들어가지 않도록 한다. 탭이 그대로 HTTP요청에 반영되기 때문이다. 
+- confirmationReq 문자열에는 탭이 들어가지 않도록 주의한다. 예를 들어, Host 헤더앞에 탭이 들어가지 않도록 한다. 탭이 그대로 HTTP요청에 반영되기 때문이다. 
 
 ```py
 def queueRequests(target, wordlists):

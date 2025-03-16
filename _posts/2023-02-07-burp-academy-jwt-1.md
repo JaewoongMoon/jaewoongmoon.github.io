@@ -13,6 +13,12 @@ toc: true
 - 문제 주소: https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-unverified-signature
 - 난이도: APPRENTICE (쉬움)
 
+
+# JWT vs JWS vs JWE
+JWT 사양은 사실 매우 제한적이다. 송신 수신 양측 간에 전송할 수 있는 JSON 객체로 정보("클레임")를 표현하는 형식만 정의한다. JWT 사양은 실제로 JWT를 구현하는 구체적인 방법을 정의하는 JSON 웹 서명(JWS) 및 JSON 웹 암호화(JWE) 사양에 의해 확장된다.
+
+즉, JWT는 일반적으로 JWS 또는 JWE 토큰이다. 사람들이 "JWT"라는 용어를 사용할 때, 그 건 거의 항상 JWS 토큰을 의미한다. JWE는 매우 유사하지만, 토큰의 실제 내용은 인코딩된 것이 아니라 암호화된다. 
+
 # 취약점 개요: Accepting arbitrary signatures
 ```
 JWT libraries typically provide one method for verifying tokens and another that just decodes them. For example, the Node.js library jsonwebtoken has verify() and decode().
@@ -21,11 +27,16 @@ Occasionally, developers confuse these two methods and only pass incoming tokens
 ```
 
 - JWT를 서버측에서 핸들링할 때 두가지 메서드가 주로 사용된다. 
-- `verify`와 `decode`다. 
+- 예를들어 Node.js에서는 `verify`와 `decode` 메서드다. 
 - 종종, 개발자들은 이 두가지 메서드를 혼동한다. `verify`를 써야하는 곳에 `decode`를 쓰는 경우, JWT의 서명 검증을 하지 않고 통과시켜버리는 취약점이 만들어진다. 
 
 
 # 문제 설명
+- 이 랩은 JWT 기반의 세션핸들링 메커니즘을 사용한다. 
+- 구현상의 실수때문에 서버는 JWT의 서명을 검증하지 않는다. 
+- 랩을 풀려면 세션토큰을 수정해서 관리자패널 /admin에 접근하여, carlos유저를 삭제한다. 
+- wiener:peter 크레덴셜로 로그인가능하다. 
+
 ```
 This lab uses a JWT-based mechanism for handling sessions. Due to implementation flaws, the server doesn't verify the signature of any JWTs that it receives.
 
@@ -33,9 +44,6 @@ To solve the lab, modify your session token to gain access to the admin panel at
 
 You can log in to your own account using the following credentials: wiener:peter
 ```
-
-- JWT의 내용을 변조해서 admin 기능에 접속할 수 있도록 만들면 된다. 
-
 
 # 풀이
 ## 로그인해서 정상적인 JWT획득

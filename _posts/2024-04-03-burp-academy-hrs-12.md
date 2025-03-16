@@ -18,13 +18,13 @@ last_modified_at: 2024-04-03 21:00:00 +0900
 
 1. 공격자는 다음과 같은 스머글링 요청을 보낸다. Content-Length 헤더에 지정된 43바이트는 Foo: X 까지의 길이이다.
 
-![](/images/burp-academy-hrs-cache-deception-pattern.png)
+![](/images/burp-academy-hrs-cache-deception-pattern.png)   
 *출처:https://portswigger.net/web-security/request-smuggling/exploiting#using-http-request-smuggling-to-perform-web-cache-deception*
 
 
 2. 이어서 victim이 일반적인 정적인 리소스를 얻는 요청을 보낸다(`GET /static/some-image.png`). 백엔드 서버는 TE헤더를 보므로, 이 요청은 직전에 공격자가 보낸 `GET /private/messages` 요청에 이어져서 처리된다. 이 때 victim의 세션쿠키 값이 있으므로 victim 계정의 `GET /private/messages` 요청으로 처리된다! 
 
-![](/images/burp-academy-hrs-cache-deception-pattern-2.png)
+![](/images/burp-academy-hrs-cache-deception-pattern-2.png)   
 *출처:https://portswigger.net/web-security/request-smuggling/exploiting#using-http-request-smuggling-to-perform-web-cache-deception*
 
 3. 그리고 프론트엔드 서버는 CL헤더를 보기 때문에 `GET /static/some-image.png`는 별도 요청으로 판단한다. 그 결과, 백엔드에서 처리된 victim의 `GET /private/messages`요청에 대한 응답이 정적리소스 `GET /static/some-image.png`에 대한 응답으로 캐싱된다. 

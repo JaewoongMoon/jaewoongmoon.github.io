@@ -4,7 +4,7 @@ title: "Burp Academy-HTTP Request Smuggling 관련 취약점: Client-side desync
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, HTTP Request Smuggling]
 toc: true
-last_modified_at: 2024-03-18 21:00:00 +0900
+last_modified_at: 2024-11-28 21:00:00 +0900
 ---
 
 # 개요
@@ -27,7 +27,7 @@ CSD는 대략 다음과 같은 스텝으로 진행된다.
 
 3. 악의적인 prefix는 서버가 첫번째 요청(initial request)에 응답한 후에도 서버의 TCP/TLS소켓에 남는다. (victim의 브라우저와 서버 사이의 커넥션이 오염된 상태다.)
 
-4. 자바스크립트는 새로운 요청을 오염된 커넥션을 통해서 보낸다. 이는 악의적인 prefix뒤에 추가된다. 그 결과 서버로부터 (유저에게)해로운 반응을 이끌어낸다. 
+4. 자바스크립트는 새로운 요청을 오염된 커넥션을 통해서 보낸다. 이는 악의적인 prefix뒤에 추가된다. 그 결과 서버로부터 유저에게 해로운 반응을 이끌어낸다. 
 
 
 ## Client-side desync 취약점 테스트하기 
@@ -40,7 +40,10 @@ CSD는 대략 다음과 같은 스텝으로 진행된다.
 5. Construct a working exploit in Burp.
 6. Replicate the exploit in your browser.
 
-1. Client-side desync vector 조사(probing)하기
+
+각 단계를 좀 더 상세하게 정리해둔다. 
+
+### 1. Client-side desync vector 조사(probing)하기
 CSD 테스트의 첫번째 단계는 CL헤더를 무시하는 엔드포인트를 찾는 것, 혹은 CL헤더를 무시하도록 만들 수 있는 요청을 만드는 것이다. 
 이를 테스트하는 가장 간단한 방법은 실제 컨텐츠의 길이보다 긴 CL헤더 값을 보내보는 것이다. 
 - 만약 응답이 돌아오지 않고 계속 대기상태이거나 서버측에서 타임아웃 에러가 발생하면, 이는 서버측에서 부족한 바이트분의 데이터를 기다리고 있다는 신호가 된다. 
@@ -50,31 +53,33 @@ CL.0와 마찬가지로, 가장 가능성이 높은 곳은 POST 요청이 기대
 
 혹은 서버에러를 일으킴으로서 CL헤더를 무시하는 서버반응을 유발할 수 있다. 
 
-2. vector를 확신(컨펌)하기
+### 2. vector를 확신(컨펌)하기
 실제로 스머글링하는 POC으로 컨펌한다. 
 
-3. 브라우저에서 사용할 수 있는 POC 만들기 
+### 3. 브라우저에서 사용할 수 있는 POC 만들기 
 2번의 POC을 브라우저에서도 재현가능한지 확인해본다. 
 
-## Client-side desync 취약점 익스플로잇하기 
-### Client-side variations of classic attacks
+### 4. Client-side desync 취약점을 익스플로잇할 수 있는 방법을 찾기 
+다음과 같은 다양한 익스플로잇이 가능하다. 
+- Client-side variations of classic attacks
+- Client-side cache poisoning
+- Poisoning the cache with a redirect
+- Triggering the resource import
+- Delivering a payload
+- Pivoting attacks against internal infrastructure
 
-### Client-side cache poisoning
+### 5. 찾은 익스플로잇을 Burp에서 동작하도록 만들기
 
-#### Poisoning the cache with a redirect
 
-#### Triggering the resource import
+### 6. Burp에서 동작한 익스플로잇을 웹 브라우저에서도 동작하도록 만들기 
 
-#### Delivering a payload
-
-### Pivoting attacks against internal infrastructure
 
 # 랩 개요
 - 이 랩은 Client-side desync 공격에 취약하다. 어떤 엔드포인트에서는 서버가 CL헤더를 무시하기 때문이다. 이를 이용해 victim이 자신의 세션쿠키를 노출하도록 만들 수 있다. 
 - 랩을 풀려면 다음 순서대로 진행하면 된다. 
 1. Burp에서 client-side desync 벡터를 테스트하고 사용할 수 있는 것을 찾는다. 그리고 그 것을 웹 브라우저에서도 사용할 수 있는지 확인한다. 
 2. 어플리케이션에서 텍스트 데이터를 저장하는 부분을 찾는다. 
-3. 위 두개를 결합해서 victim의 브라우저가 몇 개의 연속되는 크로스 도메인 요청을 하도록 만들어서 세션 쿠기를 노출시키도록 만든다. 
+3. 위 두개를 결합해서 victim의 브라우저가 몇 개의 연속되는 크로스 도메인 요청을 하도록 만들어서 세션 쿠키를 노출시키도록 만든다. 
 4. 훔친 쿠키를 사용해서 victim의 계정에 접근한다. 
 
 ```
@@ -90,7 +95,7 @@ To solve the lab:
 
 # 풀이 
 
-1. Burp Scanner로 돌려본다. `POST /`엔드포인트에서 CSD가 검출되었다. 
+1. Burp Scanner로 돌려본다. `POST /` 엔드포인트에서 CSD가 검출되었다. 
 
 ![](/images/burp-academy-hrs-20-1.png)
 
@@ -160,8 +165,55 @@ Burp 를 통하지 않고 바로 랩 서버로 접근하도록 하자 결과가 
 
 7. 이제 exploit서버에 이 요청을 저장한다. `<script>`태그로 감싸는 것을 잊지 않아야 한다.  Deliver to victim을 눌러서 결과를 확인해본다. Session 쿠키 값을 얻어낼 때까지 Content-Length 값을 계속 늘린다. 900일 때 다음과 같이 세션쿠키 값을 얻어낼 수 있었다. 
 
-![](/images/burp-academy-hrs-20-8.png)
+![](/images/burp-academy-hrs-20-9.png)
 
 8. 이 세션쿠키 값으로 랩에 접근하면 문제가 풀렸다는 메시지가 표시된다. 
 
 ![](/images/burp-academy-hrs-20-10.png)
+
+# 추가 
+## CORS로 방어되고 있는데 어떻게 공격이 가능한가?
+회사 동료와 이야기하다가 깨달음이 있었기 떄문에 적어둔다. (2024/11/28) CORS는 동일 오리진 폴리시의 제한과 마찬가지로 자바스크립트가 요청의 결과 데이터에 접근하는 것을 막는 기술이다. 따라서 CORS로 인해 데이터 접근을 제한하고 있더라도 **HTTP 요청자체는 전송된다.** CSD는 이 것을 이용하여 유저에게 두 개의 연속된 요청을 전송시켜서 (스머글링시켜서) 뭔가 나쁜짓을 하는 테크닉이다. 이번 랩의 경우에는 커멘트 저장기능과 결합해서 유저의 중요정보(세션쿠키정보)를 저장시키도록 만들었다. 
+
+
+## fetch API 에서 mode 속성이 `cors`, `no-cors`가 있는데 각각 어떤 의미인가? 
+
+테스트해봤다. 익스플로잇 서버에서 랩 서버로의 HTTP통신이다. `cors`모드로 보내면 CORS 에러가 발생한다. 다음과 같다. 
+
+![](/images/burp-academy-cors-no-cors-test-1.png)
+
+`no-cors`모드로 보내면 CORS 에러가 발생하지 않는다. `no-cors`는 자바스크립트에서 HTTP 응답에 접근할 필요가 없을 때 사용한다고 한다. 그 외에도 브라우저의 네트워크 탭에서 봤을 때 Connection ID가 표시되므로 트러블슈팅에 도움된다고 한다. 
+
+![](/images/burp-academy-cors-no-cors-test-2.png)
+
+어느 모드로 해도 HTTP요청자체는 전송이 된다. 
+
+Burp Academy에서 제시하는 테크닉도 기본적으로는 1차요청이 `no-cors`고, (CORS에러가 발생하지 않으므로) `then()`함수로 이어서 요청을 보내는 식으로 되어 있다. 이는 타겟 서버에서 리다이렉트응답을 하지 않을 경우 유용하다. 
+
+```html
+<script>
+    fetch('https://vulnerable-website.com/desync-vector', {
+        method: 'POST',
+        body: 'GET /redirect-me HTTP/1.1\r\nFoo: x',
+        credentials: 'include',
+        mode: 'no-cors'
+    }).then(() => {
+        location = 'https://vulnerable-website.com/resources/target.js'
+    })
+</script>
+```
+
+만약 서버가 리다이렉트를 응답한다면 스머글링을 시킬 수 없기 때문에 일부러 CORS 에러를 유도해서 브라우저가 리다이렉트에 따르지 않도록 만드는 테크닉을 사용한다. 일부러 CORS 에러를 발생시켜야 하기 때문에 `cors`모드를 사용해서 `catch()`함수와 결합해서 사용한다. 다음과 같다.  
+
+```html
+<script>
+fetch('https://vulnerable-website.com/redirect-me', {
+    method: 'POST',
+    body: 'GET /hopefully404 HTTP/1.1\r\nFoo: x',
+    mode: 'cors',
+    credentials: 'include'
+}).catch(() => {
+    location = 'https://vulnerable-website.com/'
+})
+</script>
+```

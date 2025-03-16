@@ -10,12 +10,12 @@ last_modified_at: 2023-09-12 14:33:00 +0900
 # 개요
 - 새로 추가된 레이스 컨디션 관련 취약점 문제이다. 
 - 문제 주소: https://portswigger.net/web-security/race-conditions/lab-race-conditions-single-endpoint
-- 취약점 설명페이지: https://portswigger.net/web-security/race-conditions#limit-overrun-race-conditions
+- 취약점 설명페이지: https://portswigger.net/web-security/race-conditions#single-endpoint-race-conditions
 - 난이도: PRACTITIONER (보통)
 
 # 문제 설명 
 - 메일 주소 carlos@ginandjuice.shop에는 이 사이트의 관리자로 초대하는 요청을 전송된 상태이지만 아직 계정이 만들어지지는 않았다. 
-- 따라서 이 메일 주소를 사용하는 계정을 만들 수 있다면 관리자 권한을 얻을 수 있다. 
+- 따라서 **이 메일 주소를 사용한다고 인증할 수 있으면 관리자 권한으로 계정을 만들 수 있다.**
 - 이 랩을 풀기 위해서는 먼저 임의의 이메일 주소를 등록할 수 있는 레이스 컨디션이 가능한 엔드포인트를 찾아야 한다. 
 - 그리고 이메일 주소를  carlos@ginandjuice.shop.로 변경한다. 
 - 그리고  @exploit-<YOUR-EXPLOIT-SERVER-ID>.exploit-server.net 메일주소로 보낸 메일은 모두 볼 수 있게 되어 있다. 
@@ -51,11 +51,13 @@ Solving this lab requires Burp Suite 2023.9 or higher.
 
 아마 단순히 wiener 계정의 메일 주소 `wiener@exploit-0a44000103087c9480b30c5401ce00da.exploit-server.net` 를 `carlos@ginandjuice.shop`로 변경하는 것은 아닐 것이다. 
 
-일단 한번 시도해본다. 그러면 다음과 같이 `carlos@ginandjuice.shop`에 도착한 confirm 링크를 클릭하라는 안내가 나온다. 
+그래도 일단 한번 시도해본다. 그러면 다음과 같이 `carlos@ginandjuice.shop`에 도착한 confirm 링크를 클릭하라는 안내가 나온다. 
 
 ![이메일 변경하기](/images/burp-academy-race-condition-4-3.png)
 
-실제 `carlos@ginandjuice.shop`메일 주소로 로그인해서 내용을 확인할 수는 없으니 풀이 방법을 생각해봐야 한다. 레이스 컨디션 취약점을 사용해서 서버가 confirm링크를 `carlos@ginandjuice.shop`로 보냈다고 생각하지만 실제로는 그 내용을 `wiener@exploit-0a44000103087c9480b30c5401ce00da.exploit-server.net`로 보내면 될 것이다. 그렇게 되면 도착한 메일 내용을 확인해서 confirm링크에 접근하면, 이메일 주소 변경에 성공할 것이다. 이메일 주소가 carlos@ginandjuice.shop가 되면 이 메일 주소에는 관리자권한으로 초대가 보내져 있으므로 wiener유저도 관리자 권한으로 사이트에 접근할 수 있을 것이다. 
+`carlos@ginandjuice.shop`메일 주소로 로그인해서 내용을 확인할 수는 없으니 계정을 만들 수 없다. 해당 메일 주소로 메일이 전달되더라도 그 내용을 볼 수 있어야 풀 수 있다. 방법을 생각해본다. 
+
+레이스 컨디션으로 서버가 confirm링크를 `carlos@ginandjuice.shop`로 보내면서 동시에 그 내용을 `wiener@exploit-0a44000103087c9480b30c5401ce00da.exploit-server.net`로 보내도록 만들면 될 것같다. 그렇게 되면 공격자는 도착한 메일 내용을 확인해서 confirm링크에 접근, 이메일 주소 변경을 할 수 있을 것이다. 이메일 주소가 carlos@ginandjuice.shop가 되면 이 메일 주소에는 관리자권한으로 초대가 보내져 있으므로 wiener유저도 관리자 권한으로 사이트에 접근할 수 있을 것이다. 
 
 # 풀이 시도
 ## 이메일 주소를 변경하는 요청을 동시에 보내기 
@@ -79,5 +81,8 @@ Admin Panel로 들어가서 carlos 유저를 삭제한다.
 
 ![문제 풀이 성공](/images/burp-academy-race-condition-4-success.png)
 
-# 복기하기 
-이번 취약점은 Single-endpoint 레이스 컨디션 문제였다. 어떤 중요한 처리를 하는 시스템의 Endpoint에 레이스 컨디션 취약점이 있으면 관리자 권한 탈취로까지 이어질 수 있다는 것을 확인했다. 이메일 주소 업데이트 뿐 아니라 패스워드 변경과 같은 것도 마찬가지다. 특정 계정의 새로운 패스워드를 이메일로 통지하는 시스템이 있다고 할 때, 이 새로운 패스워드를 자신의 이메일로 보내도록 할 수 있다면 해당 계정을 탈취할 수 있을 것이다. 중요 처리에는 레이스 컨디션 취약점이 없는지 제대로 체크애야 하겠다. 
+# 감상
+- 이번 취약점은 Single-endpoint 레이스 컨디션 문제였다. 
+- 어떤 중요한 처리를 하는 시스템의 Endpoint에 레이스 컨디션 취약점이 있으면 관리자 권한 탈취로까지 이어질 수 있다는 것을 확인했다.
+- 이메일 주소 업데이트 뿐 아니라 패스워드 변경과 같은 것도 마찬가지다. 특정 계정의 새로운 패스워드를 이메일로 통지하는 시스템이 있다고 할 때, 이 새로운 패스워드를 공격자 자신의 이메일로 보내도록 할 수 있다면 해당 계정을 탈취할 수 있을 것이다. 
+- 중요 처리에는 레이스 컨디션 취약점이 없도록 구현하는 것이 좋다. 

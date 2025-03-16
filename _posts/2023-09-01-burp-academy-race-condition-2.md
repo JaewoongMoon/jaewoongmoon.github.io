@@ -56,6 +56,8 @@ def queueRequests(target, wordlists):
 ## Turbo Intruder 설치
 혹시 Turbo Intruder가 설치되어 있지 않다면 Extensions > BApp Store에서 Turbo Intruder를 설치한다. 
 
+※ Turbo Intruder는 Python으로 작성되었으므로 Burp Suite에서 실행하려면 Jython이 필요하다. 
+
 ## 로그인 요청을 터보 인트루더로 보내기 
 로그인요청을 Burp Proxy로 잡은 후에 마우스 오른쪽 버튼 클릭 Extensions > Turbo Instruder > Send to turbo intruder를 선택한다. 
 
@@ -116,7 +118,7 @@ def handleResponse(req, interesting):
 
 ## 브루트 포스 공격시도 
 
-4. attack을 눌러서 공격을 시도한다. 그러면 다음과 같이 결과라 리스트업 된다. 여러 요청중에 하나만 302응답인 것을 알 수 있다. 이 것이 calors유저의 패스워드이다. 
+4. attack을 눌러서 공격을 시도한다. 그러면 다음과 같이 결과라 리스트업 된다. 여러 응답중에 하나만 302응답인 것을 알 수 있다. 이 것이 calors유저의 패스워드이다. 
 
 (혹시 csrf토큰에러가 발생한다면 새롭게 로그인 웹 페이지에 들어가서 새로운 csrf토큰을 얻어와서 세팅한다. )
 

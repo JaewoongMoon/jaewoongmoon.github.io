@@ -4,6 +4,7 @@ title: "Burp Academy-OAuth grant types"
 categories: [Burp Academy]
 tags: [Burp Academy, OAuth]
 toc: true
+last_modified_at: 2024-12-16 15:35:00 +0900
 ---
 
 # 개요
@@ -20,7 +21,7 @@ OAuth에는 여러가지 종류의 grant type이 있고, 각 grant type 별로 �
 # OAuth scopes 
 어떤 OAuth grant type이라고 해도 클라이언트 어플리케이션은 어떤 데이터에 접근하고 싶은지와 어떤 업무를 수행(operation)하고 싶은지를 명시해야 하는 것은 동일하다. 이 것은 인가 요청에 `scope` 파라메터를 보내는 것으로 수행된다.   
 
-기본적인 OAuth에서는 OAuth 서비스별로 scope가 다르다. scope는 단순한 문자열이기 때문에 포맷은 OAuth 프로바이더별로 매우 다양하다. 어떤 곳은 REST API 엔드포인트처럼 URI 전체를 사용하는 곳도 있다.   
+기본적인 OAuth에서는 OAuth 서비스별로 scope가 다르다. scope는 단순한 문자열이기 때문에 포맷은 OAuth 프로바이더별로 매우 다양하다. 어떤 곳은 다음과같이 REST API 엔드포인트처럼 URI 전체를 사용하는 곳도 있다.   
 
 ```
 scope=contacts
@@ -29,7 +30,7 @@ scope=contact-list-r
 scope=https://oauth-authorization-server.com/auth/scopes/user/contacts.readonly
 ```
 
-그러나, OAuth가 인증(authentication)으로 사용될 때 표준화된 OpenID Connect socpe가 종종 대신 사용된다. 예를 들면, `openid profile`는 클라이언트 어플리케이션에게 미리 정의된 사용자의 기본 정보(이메일 주소, 유저이름 등) 에 관한 읽기 권한을 주기 위한 scope이다.
+그러나, OAuth가 인증(authentication)으로 사용될 때 "표준화된 OpenID Connect scope"가 종종 대신 사용된다. 예를 들면, `openid profile`는 클라이언트 어플리케이션에게 미리 정의된 사용자의 기본 정보(이메일 주소, 유저이름 등) 에 관한 읽기 권한을 주기 위한 scope이다.
 
 # Authorization code grant type
 

@@ -22,6 +22,14 @@ ip.src==127.0.0.1 or ip.dst==127.0.0.1
 tcp.port eq 25 or icmp
 ```
 
+## 프로토콜 필터
+
+그냥 검색창에 프로토콜명을 쓰면 된다. 
+
+```sh
+dns
+```
+
 
 # 참고 
 - https://wiki.wireshark.org/DisplayFilters

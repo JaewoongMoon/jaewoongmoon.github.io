@@ -7,7 +7,7 @@ toc: true
 ---
 
 # 개요
-- OAuth 2.0 인증에 관련된 취약점이다. 
+- OAuth 2.0 관련된 취약점이다. 
 - 취약점 설명 주소: https://portswigger.net/web-security/oauth
 - 문제 주소: https://portswigger.net/web-security/oauth/lab-oauth-forced-oauth-profile-linking
 - 난이도: PRACTITIONER (보통)
@@ -15,29 +15,18 @@ toc: true
 # 취약점 설명 : Flawed CSRF protection
 - state 파라메터가 CSRF 토큰과 같은 역할을 한다는 내용이다. 
 - 만약 클라이언트 어플리케이션에서 OAuth서비스로 인가 코드요청(Authz request)을 보낼 때, state파라메터를 보내지 않으면 보안상 위험하다. (공격자에게는 아주 흥미롭다)
-- 구체적으로는 클라이언트 어플리케이션입장에서 [ Authorization code grant type]({% post_url 2023-04-06-burp-oauth-grant-types %}) 의 요청을 수행하는 주체(아래 시퀀스도표에서 1번과 3번)가 정상적인 고객인지 공격자인지 분간할 수 없다는 것을 의미한다. 
+- 구체적으로는 클라이언트 어플리케이션입장에서 인증코드를 전달해준 인가서버가 정상적인 인가서버인지 공격자의 서버인지 (아래 시퀀스도표에서 1번과 3번이 동일한지)를 판단할 수 없다는 것을 의미한다. 
 
 ![Authorization code grant type](/images/burp-academy-oauth-grant-type-authorization-code.png)
 (출처: https://portswigger.net/web-security/oauth/grant-types)
 
-- 만약 사이트가 OAuth만을 이용해서 로그인을 할 수 있다면 state파라메터는 비교적 덜 중요하다. 그러나 여전히 CSRF공격은 유효하며, 유저가 공격자가 의도한 계정으로 로그인되도록 만들 수 있다. 
-
-```
-Although many components of the OAuth flows are optional, some of them are strongly recommended unless there's an important reason not to use them. One such example is the state parameter.
-
-The state parameter should ideally contain an unguessable value, such as the hash of something tied to the user's session when it first initiates the OAuth flow. This value is then passed back and forth between the client application and the OAuth service as a form of CSRF token for the client application. Therefore, if you notice that the authorization request does not send a state parameter, this is extremely interesting from an attacker's perspective. It potentially means that they can initiate an OAuth flow themselves before tricking a user's browser into completing it, similar to a traditional CSRF attack. This can have severe consequences depending on how OAuth is being used by the client application.
-
-Consider a website that allows users to log in using either a classic, password-based mechanism or by linking their account to a social media profile using OAuth. In this case, if the application fails to use the state parameter, an attacker could potentially hijack a victim user's account on the client application by binding it to their own social media account.
-
-Note that if the site allows users to log in exclusively via OAuth, the state parameter is arguably less critical. However, not using a state parameter can still allow attackers to construct login CSRF attacks, whereby the user is tricked into logging in to the attacker's account.
-
-```
+- 만약 사이트가 OAuth만을 이용해서 로그인을 할 수 있다면 state파라메터는 비교적 덜 중요하다. 그러나 여전히 로그인 CSRF공격은 유효하며, 유저가 공격자가 의도한 계정으로 로그인되도록 만들 수 있다. 
 
 
 # 문제 개요
-- 이 랩에는 소셜미디어 프로파일을 자신의 계정에 붙일 수 있는 기능이 있다. (소셜미디어 계정으로 로그인할 수 있다)
+- 이 랩에는 ID/PW로그인 혹은 소셜미디어 프로파일을 사용해서 로그인할 수 있는 옵션이 있다. 
 - 클라이언트 어플리케이션(웹 사이트)측의 OAuth구현에 취약점이 있기 때문에 공격자는 다른 유저의 계정에 접근할 수 있다. 
-- exloit 서버를 사용해서 CSRF 공격을 통해 공격자 자신의 소셜 미디어 프로파일을 웹 사이트 관리자의 계정에 붙인다(attach).
+- 랩을 풀려면 CSRF 공격을 통해 공격자 자신의 소셜 미디어 프로파일을 웹 사이트 관리자의 계정에 붙여라(attach).
 - 관리자 기능을 통해 calros 유저를 삭제하면 문제가 풀린다. 
 
 ```
@@ -84,7 +73,7 @@ Te: trailers
 
 ```
 
-이 요청을 전송하면 OAuth 사이트(xxxx.oauth-server.net)의 소셜 미디어 계정으로 로그인하는 화면으로 이동된다. 여기에 소셜미디어 계정의 ID `peter.wiener` 와 `hotdog`를 입력해서 로그인한다. 
+요청을 전송하면 OAuth 사이트(xxxx.oauth-server.net)의 소셜 미디어 계정으로 로그인하는 화면으로 이동된다. 여기에 소셜미디어 계정의 ID `peter.wiener` 와 `hotdog`를 입력해서 로그인한다. 
 
 ![소셜 미디어 계정 로그인화면](/images/burp-academy-oauth-2-3.png)
 
@@ -111,7 +100,7 @@ Content-Length: 283
 Redirecting to <a href="https://0a4e00fb0337bb8c802f122d00df0026.web-security-academy.net/oauth-login?code=iuhGY_JFQGIlqSEob4WHtFriuIhCVkrXwRW_1Dvj3JO">https://0a4e00fb0337bb8c802f122d00df0026.web-security-academy.net/oauth-login?code=iuhGY_JFQGIlqSEob4WHtFriuIhCVkrXwRW_1Dvj3JO</a>.
 ```
 
-그리고 브라우저는 리다이렉트 지시에 따라 다음과 같은 요청을 클라이언트 어플리케이션 서버로 요청한다. OAuth 인증 코드(`code`파라메터)와 함께 세션 값 `rGlfOYlFMO7MzwcSml1TUfokXGSs4uZl`이 함께 전송된다. 
+그리고 브라우저는 리다이렉트 지시에 따라 다음과 같은 요청을 클라이언트 어플리케이션 서버로 요청한다. OAuth 인가 코드(`code`파라메터)와 함께 세션 쿠키 `rGlfOYlFMO7MzwcSml1TUfokXGSs4uZl`가 함께 전송된다. 
 
 ```http
 GET /oauth-login?code=iuhGY_JFQGIlqSEob4WHtFriuIhCVkrXwRW_1Dvj3JO HTTP/2
@@ -177,7 +166,7 @@ deliver exploit to victim 버튼을 클릭한다. 이 것으로 관리자가 이
 
 ![관리자 계정으로 로그인](/images/burp-academy-oauth-2-9.png)
 
-Admin Panel 메뉴로 들어가면 유저를 삭제할 수 있다. Calors 유저를 삭제한다. 그러면 풀이에 성공했다는 메세지가 출력된다. 
+Admin Panel 메뉴로 들어가면 유저를 삭제할 수 있다. Carlos 유저를 삭제한다. 그러면 풀이에 성공했다는 메세지가 출력된다. 
 
 ![성공](/images/burp-academy-oauth-2-success.png)
 

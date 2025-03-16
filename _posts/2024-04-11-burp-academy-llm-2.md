@@ -49,7 +49,7 @@ As a customer support assistant for the Gin and Juice shop, I can call the follo
 
 ![](/images/burp-academy-llm-2-1.png)
 
-5. 이번에는 메일의 유저부분에 `$(whoami)`를 넣어서 구독요청을 해본다. 그러면 도착한 메일에서 커맨드 `$(whoami)`가 실행된 값 carlos를 확인할 수 있다! 이 것으로 OS 커맨드 인젝션이 가능한 것을 알았다. 
+5. 다음은 메일의 유저부분에 `$(whoami)`를 넣어서 구독요청을 해본다. 그러면 도착한 메일에서 커맨드 `$(whoami)`가 실행된 값 carlos를 확인할 수 있다! 이 것으로 OS 커맨드 인젝션이 가능한 것을 알았다. 
 
 ![](/images/burp-academy-llm-2-2.png)
 

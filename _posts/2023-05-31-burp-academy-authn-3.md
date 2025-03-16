@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy-인증(Authentication) 취약점: Username enumeration via subtly different responses"
+title: "Burp Academy-인증(Authentication) 취약점: Password reset broken logic"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, 인증취약점]
 toc: true
