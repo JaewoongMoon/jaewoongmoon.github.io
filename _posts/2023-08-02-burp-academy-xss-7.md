@@ -4,50 +4,60 @@ title: "Burp Academy-XSS 취약점: Reflected XSS into attribute with angle brac
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, XSS취약점]
 toc: true
-last_modified_at: 2023-08-04 05:55:00 +0900
+last_modified_at: 2025-06-20 05:55:00 +0900
 ---
 
 # 개요
-- Reflected 타입의 XSS 취약점 문제이다. 
-- 문제 주소: https://portswigger.net/web-security/cross-site-scripting/contexts/lab-attribute-angle-brackets-html-encoded
+- Reflected 타입의 XSS 취약점 랩이다. 사용자의 입력이 HTML태그의 속성(Attribute)에 들어가는 패턴이다. 
+- 랩 주소: https://portswigger.net/web-security/cross-site-scripting/contexts/lab-attribute-angle-brackets-html-encoded
+- 취약점 설명: https://portswigger.net/web-security/cross-site-scripting/contexts
 - 난이도: APPRENTICE (쉬움)
 
+# HTML 태그 속성의 XSS
+XSS 컨텍스트(사용자의 입력이 삽입되는 부분)가 HTML 태그 속성 값에 있을 때, 속성 값을 종료하고 태그를 닫은 후 새 태그를 삽입할 수 있는 경우가 있다. 예를 들면 다음과 같은 경우다. 
+
+```js
+"><script>alert(document.domain)</script>
+```
+
+이런 상황에서는 일반적으로 꺾쇠괄호가 차단되거나 인코딩되어 입력 내용이 태그 밖으로 나갈 수 없다. 꺾쇠괄호는 사용하지 못하더라도, 쌍따옴표를 사용가능하다면 속성 값을 종료할 수 있다. 속성 값을 종료할 수 있다면 이벤트 핸들러와 같은 스크립팅 가능한 컨텍스트를 생성하는 새 속성을 추가할 수 있. 예를 들면 다음과 같다.
+
+```js
+" autofocus onfocus=alert(document.domain) x="
+```
+
+위 페이로드는 HTML요소가 포커스를 받을 때 JavaScript를 실행하는 `onfocus` 이벤트를 생성하고, 사용자 상호 작용 없이 `onfocus` 이벤트를 자동으로 트리거하는  `autofocus` 속성을 추가한다. 마지막으로, `x="`를 추가하여 뒤따르는 마크업이 정상적으로 처리되도록 한다. 
+
+
 # 문제
-- 이 사이트의 블로그의 검색 기능에 Reflected XSS취약점이 존재한다. 
-- 구체적으로는 angle bracket(<> 기호)이 HTML인코드 되는 부분이다. 
-- XSS페이로드를 보내서 alert 함수를 실행시키면 문제가 풀린다. 
+- 이 랩은 블로그의 검색 기능에 Reflected XSS취약점이 존재한다. 한편, 꺽쇠기호(angle bracket)가 HTML인코드 된다. 
+- 랩을 풀려면 XSS페이로드를 보내서 alert 함수를 실행시키면 문제가 풀린다. 
 
 ```
 This lab contains a reflected cross-site scripting vulnerability in the search blog functionality where angle brackets are HTML-encoded. To solve this lab, perform a cross-site scripting attack that injects an attribute and calls the alert function.
 ```
 
 # 풀이 
-## 예상 
-- 어느정도는 XSS 대책이 되어 있지만 일부 허점이 있을 것 같다. 
-- 문제설명에서 HTML 인코딩 부분에서 취약점이 있다고 했으니 이 방향으로 생각해보자. 
-- XSS Cheatsheet에서 HTML 인코딩과 관련된 부분을 찾아보자. 
+1. 검색화면에서 다음 XSS 페이로드를 테스트해본다.
 
-## 도전 
-검색화면에서 XX페이로드를 테스트해본다.
-
-```
+```js
 " onfocus=javascript:alert(1);
 ```
 
-그러면 쌍따옴표 (더블 쿼테이션,")삽입이 가능한 것을 알 수 있다. 
+2. 그러면 쌍따옴표 (더블 쿼테이션,")삽입이 가능한 것을 알 수 있다. 
 
-![싱크발견](/images/burp-academy-xss-6-sink.png)
+![싱크발견](/images/burp-academy-xss-7-sink.png)
 
-그런데 `" onfocus=javascript:alert(1);`를 삽입한 상태에서는 크롬에서 다음과 같은 자바스크립트 에러가 발생한다. 
+3. 그런데 이 상태에서는 다음과 같은 자바스크립트 에러가 발생한다. 
 
-![Chrome에서 발생](/images/burp-academy-xss-6-1.png)
+![Chrome에서 발생](/images/burp-academy-xss-7-1.png)
 
-다음과 같이 마지막에 쌍따움표를 하나 더 붙여주어야 제대로 동작했다. 
+4. 다음과 같이 마지막에 쌍따움표를 하나 더 붙여주어야 한다. 
 
-```
+```js
 " onfocus=javascript:alert(1);"
 ```
 
-alert창이 호출되면 성공했다는 팝업이 뜬다. 
+5. 위의 페이로드로 검색을 수행하면 alert창이 호출되고 랩이 풀린다. 
 
-![성공](/images/burp-academy-xss-6-success.png)
+![성공](/images/burp-academy-xss-7-success.png)

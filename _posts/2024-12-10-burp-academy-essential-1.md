@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Burp Academy-DOM 관련 취약점: Discovering vulnerabilities quickly with targeted scanning"
+title: "Burp Academy-필수스킬: Discovering vulnerabilities quickly with targeted scanning"
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, Essential Skills]
 toc: true

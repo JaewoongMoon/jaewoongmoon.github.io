@@ -49,8 +49,8 @@ Burp Suite에서 Burp Collaborator 페이로드를 하나 생성한다.
 secret=Y8vNwX8F26uo4ZIMu7pv4MfHzuIMwr50; session=aD7nFaiUl2LcLrx2wK3NullmzDxF3LxR
 ```
 
-![collaborator서버결과](/images/burp-academy-xss-5-1.png)
+![collaborator서버결과](/images/burp-academy-xss-13-1.png)
 
 이제 victim으로 로그인하면 문제가 풀릴 것이다. 문제 서버의 홈으로 이동하는 요청을 Burp Proxy로 캡쳐하고 session의 값을 위에서 얻은 victim의 세션값으로 변경하고 요청을 보낸다. 그러면 문제 풀이에 성공했다는 메세지가 출력된다. 
 
-![풀이성공](/images/burp-academy-xss-5-success.png)
+![풀이성공](/images/burp-academy-xss-13-success.png)

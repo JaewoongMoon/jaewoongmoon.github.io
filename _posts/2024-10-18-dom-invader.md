@@ -4,7 +4,7 @@ title: "Dom Invader 사용방법 정리"
 categories: [취약점스캔툴, Burp Suite, Dom Invader]
 tags: [취약점스캔툴, Burp Suite, Dom Invader]
 toc: true
-last_modified_at: 2024-10-18 21:55:00 +0900
+last_modified_at: 2025-05-08 21:55:00 +0900
 ---
 
 
@@ -54,4 +54,5 @@ Attack Types에서 각각 Dom clobbering 과 Prototype Pollusion 체크를 활�
 
 
  # 참고 
+ - 공식문서: https://portswigger.net/burp/documentation/desktop/tools/dom-invader
  - 오래된 정보긴 하지만 참고는 된다: https://speakerdeck.com/okuken/dom-invader?slide=25

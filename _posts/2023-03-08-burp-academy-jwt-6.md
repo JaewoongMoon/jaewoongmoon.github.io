@@ -4,6 +4,7 @@ title: "Burp Academy-JWT 여섯번째 문제:Injecting self-signed JWTs via the 
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, JWT취약점]
 toc: true
+last_modified_at: 2025-03-31 21:55:00 +0900
 ---
 
 # 개요
@@ -13,7 +14,7 @@ toc: true
 - 문제 주소: https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-kid-header-path-traversal
 - 난이도: PRACTITIONER (중간)
 
-# 취약점 개요 
+# `kid` 파라메터를 통해 자신이 서명한 JWT를 삽입하기 (Injecting self-signed JWTs via the kid parameter)
 서버는 JWT뿐만 아니라 여러 종류의 데이터에 서명하기 위해 여러 종류의 암호키를 사용할 수 있다. 이 이유때문에 JWT에는 `kid`(Key ID)파라메터를 포함하는 경우가 있다. 이 파라메터는 서버에게 서명을 검증하기해 어떤 키를 사용하면 되는지 알려주는 역할을 한다. 
 검증용 키는 종종 JWK Set으로 저장된다. 이 경우, 서버는 `kid`에 지정된 값과 동일한 JWK를 사용한다. 그러나, JWS 스펙에는 이 ID의 구조에 대한 명확한 정의가 없다. 그냥 개발자가 지정할 수 있는 문자열일 뿐이다. 예를들면, `kid`파라메터는 데이터베이스의 엔트리를 지정할 수도 있고, 파일의 이름을 지정할 수도 있다. 
 만약 `kid`파라메터가 `directory traversal`에 취약하면, 공격자는 서버에게 서버상에 존재하는 임의 파일을 서명검증용 키로 사용하도록 만들 수도 있다. 
@@ -30,6 +31,15 @@ toc: true
 이 것은 서명검증에 대칭키를 사용하는 경우에 특히 위험하다. 공격자가 서버의 예측할 수 있는 정적파일을 서명 검증키로 사용하도록 만들 수 있기 때문이다. 이 경우, 이론적으로 아무 파일이나 가능하지만, 가장 간단한 방법은 어느 리눅스 시스템에나 존재하는 `/dev/null`을 사용하는 것이다. 이 것은 빈 파일이기 때문에, 읽으면 공백 문자열을 리턴한다. 그러므로 **토큰을 공백 문자열로 서명하면 정당한 서명(valid signature)이 만들어진다.** 
 
 # 문제 개요 
+이 랩은 세션을 처리하기 위해 JWT 기반 메커니즘을 사용한다. 서명을 확인하기 위해 서버는 JWT 헤더의 kid 매개변수를 사용하여 파일 시스템에서 관련 키를 가져온다.
+
+랩을 풀려면 /admin에서 관리자 패널에 액세스할 수 있는 JWT를 위조한 다음 사용자 carlos를 삭제하라.
+
+wiener:peter 크레덴셜로 로그인할 수 있다. 
+
+참고   
+JWT Editor 확장 프로그램을 사용하는 경우 빈 문자열을 사용하여 토큰에 서명할 수 없다. 그러나 확장 프로그램의 버그로 인해 Base64로 인코딩된 null 바이트를 사용하여 이를 해결할 수 있다.
+
 ```
 This lab uses a JWT-based mechanism for handling sessions. In order to verify the signature, the server uses the kid parameter in JWT header to fetch the relevant key from its filesystem.
 
@@ -40,9 +50,6 @@ You can log in to your own account using the following credentials: wiener:peter
 Note
 If you're using the JWT Editor extension, note that this doesn't let you sign tokens using an empty string. However, due to a bug in the extension, you can get around this by using a Base64-encoded null byte.
 ```
-
-서버는 JWT의 `kid`파라메터를 통해 서버의 파일시스템에 있는 키를 얻어온다. 
-`kid`파라메터에 null바이트를 지정해서 공백값으로 서명을 검증하도록 만들면 서버의 검증을 우회할 수 있을 것 같다. 
 
 # 풀이  
 ## 정상적인 크레덴셜로 로그인 
@@ -80,7 +87,7 @@ JWT Editor Keys 탭에서 New Symmetric Key 버튼을 누른다. 일단 Generate
 
 
 ### 새롭게 서명
-- Sign을 눌러 새롭게 서명한다. 이 때 위에서 만든 null바이트 키를 선택한다. Header Options는 Don't modify header를 선택한다. 
+- Sign 버튼을 눌러 토큰에 재서명한다. 이 때 위에서 만든 null바이트 키를 선택한다. Header Options는 Don't modify header를 선택한다. 
 
 ![null바이트키로 서명하기](/images/jwt-sign-with-null-byte-base64.png)
 
@@ -98,7 +105,7 @@ JWT Editor Keys 탭에서 New Symmetric Key 버튼을 누른다. 일단 Generate
 
 이 상태로 다시 null바이트키로 서명해서 요청을 보내니 200응답이 확인됐다. 이 상태에서 요청경로만 carlos유저를 삭제하는 경로(/admin/delete?username=carlos)로 바꿔서 다시 요청을 보내면 성공했다는 메세지가 출력된다. 
 
-![성공](images/burp-academy-jwt-6-success.png)
+![성공](/images/burp-academy-jwt-6-success.png)
 
 
 ## 궁금점 및 중요한 포인트를 다시 확인

@@ -4,19 +4,18 @@ title: "Burp Academy-JWT 다섯번째 문제:JWT authentication bypass via jku h
 categories: [보안취약점, Burp Academy]
 tags: [보안취약점, Burp Academy, JWT취약점]
 toc: true
+last_modified_at: 2025-03-26 21:55:00 +0900
 ---
 
 
 # 개요
-- JWT(JSON Web Token) 취약점 다섯번째 문제이다. 
-- `jku 헤더 인젝션`에 대한 문제이다. (이전 문제는 jwk 헤더 인젝션이었다.)
+- `jku`파라메터를 이용한 취약점 문제이다. 
 - JWT 취약점 설명 주소: https://portswigger.net/web-security/jwt
-- 문제 주소: https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-jku-header-injection
+- 랩 주소: https://portswigger.net/web-security/jwt/lab-jwt-authentication-bypass-via-jku-header-injection
 - 난이도: PRACTITIONER (중간)
 
-# jku 헤더 인젝션 개요: Injecting self-signed JWTs via the jku parameter
-- `jwk` 헤더 파라메터로 공개키를 내장시키는 방법이 아니라, `jku`(JWK Set URL)헤더를 이용해서 공개키의 URL을 지정하는 테크닉이다. 
-- `JWK Set`은 다음과 같이 생겼다. 
+# jku 파라메터를 통해 셀프서명한 JWT를 삽입하기 (Injecting self-signed JWTs via the jku parameter)
+`jwk` 파라메터를 이용했을 때 처럼 공개키를 내장시키는 방법이 아니라, `jku`(JWK Set URL)헤더를 이용해서 공개키의 URL을 지정하는 테크닉이다.　키를 제공하는 서버에서 취득가능한 `JWK Set`은 다음과 같이 생겼다. 
 
 ```json
 {
@@ -37,9 +36,24 @@ toc: true
 }
 ```
 
-- 서버에서 구현할 때는 JWK는 보통 신뢰하는 도메인에서만 얻어오도록 한다. 그러나 구현에 버그가 있으면 우회하는 것도 가능하다. [이 링크](https://portswigger.net/web-security/ssrf#ssrf-with-whitelist-based-input-filters)}{:target="_blank"}에서 예를 확인할 수 있다. 
+서버에서 구현할 때 JWK는 일반적으로 신뢰할 수 있는 도메인에서만 가져 오도록 한다. 하지만 구현에 버그가 있을 경우 아래와 같은 값을 사용하여 검사를 우회할 수 있다.
+
+```
+https://expected-host:fakepassword@evil-host
+https://evil-host#expected-host
+https://expected-host.evil-host
+```
+
+자세한 내용은 아래 URL을 확인한다. 
+
+https://portswigger.net/web-security/ssrf#ssrf-with-whitelist-based-input-filters
 
 # 문제 설명
+- 이 랩은 세션을 처리하기 위해 JWT 기반 메커니즘을 사용한다. 
+- 서버는 JWT 헤더의 `jku` 매개변수를 지원한다. 그러나 키를 가져오기 전에 제공된 URL이 신뢰할 수 있는 도메인에 들어가 있는지 확인하지 못한다.
+- 랩을 풀려면 관리자 패널 `/admin` 에 액세스할 수 있는 JWT를 만든 다음 `carlos` 사용자를 삭제하라. 
+- `wiener:peter` 로 로그인할 수 있다. 
+
 ```
 This lab uses a JWT-based mechanism for handling sessions. The server supports the jku parameter in the JWT header. However, it fails to check whether the provided URL belongs to a trusted domain before fetching the key.
 
@@ -47,17 +61,14 @@ To solve the lab, forge a JWT that gives you access to the admin panel at /admin
 
 You can log in to your own account using the following credentials: wiener:peter
 ```
-- 이전 JWT문제들과 마찬가지로 관리자 기능(/admin)에 접근 가능한 JWT를 준비해서 calor유저를 삭제하면 된다. 
-- jku 헤더를 이용해서 토큰을 변조해야 한다. 
-- 이번에는 `JWK Set`을 제공하는 서버가 필요하다. 이런 경우에는 보통 문제에서 exploit서버를 준비해준다. 
-- 어쩌면 문제 서버에 필터링 기능이 있을지도 모른다. 필터링을 우회할 수 있도록 exploit서버의 URL을 조금 변경해야할지도 모른다. 
+
 
 # 풀이
-## JWK Set 준비
-JWT Editor Keys 에서 새로운 키를 만든다. 
-[JWT 4번째 문제]({% post_url 2023-02-14-burp-academy-jwt-4 %})에서 시도한 과정대로 새로운 RSA 키를 만든다. 
 
-## JWK Set 서버 준비
+## JWK Set 준비
+Burp Suite에서 확장 프로그램 `JWT Editor`가 추가되어 있는지 확인한다. JWT Editor탭의 Keys 탭에서 새로운 키를 만든다. [JWT 4번째 문제]({% post_url 2023-02-14-burp-academy-jwt-4 %})에서 시도한 과정대로 새로운 RSA 키를 만든다. 
+
+## JWK Set 제공 서버 준비
 만들어진 JWK Set을 제공하는 서버를 준비한다. exploit 서버로 이동해서 헤더와 바디부분을 구성한다. 
 
 Content-Type을 json으로 변경했다. 
@@ -85,10 +96,14 @@ json 형식이 깨지지 않도록 주의한다. json 형식이 맞지 않으면
 
 ![JWK Set 서버 ](/images/burp-academy-jwt-5-6.png)
 
-### JWT 값 변조
+## JWT 변조
+HTTP요청을 Repeater 탭으로 보내고 JWT의 값 변조를 시도한다. 
+
 1. Payload의 sub을 administrator로 바꾼다. 
 2. Header에 jku를 추가한다. exploit 서버의 URL을 지정한다.
 3. kid의 값을 생성한 키셋의 kid로 변경한다. 
+
+아래와 같다. 
 
 ```json
 {
@@ -98,15 +113,15 @@ json 형식이 깨지지 않도록 주의한다. json 형식이 맞지 않으면
 }
 ```
 
-이 상태로 /admin에 접근해보면 401 Unauthorized 응답이 돌아온다. JWT의 서명을 바꾸지 않았기 때문이다. 
+이 상태로 /admin에 접근해보면 401 Unauthorized 응답이 돌아온다. JWT의 서명을 바꾸지 않았기 때문이다. 이어서 JWT의 재서명을 시도한다. 
 
-### JWT 재서명하기 
+## JWT 재서명하기 
 
-JSON Web Token 탭에서 Sign버튼을 클릭한다. 
+Repeater의 JSON Web Token 탭에서 Sign버튼을 클릭한다. 
 
 ![JWT 재서명](/images/burp-academy-jwt-5-7.png)
 
-팝업이 나타난다. 키(kid)를 선택하고 `Don't modify header`옵션을 선택한다. 
+팝업이 나타난다. 키(kid)를 선택하고 `Don't modify header`옵션을 선택하고 OK버튼을 누른다. 
 
 ![재서명팝업](/images/burp-academy-jwt-5-4.png)
 
@@ -116,7 +131,8 @@ JWT의 서명부분이 바뀐 것을 확인할 수 있다. 이상태에서 HTTP 
 ![admin 경로접근성공](/images/burp-academy-jwt-5-3.png)
 
 
-calors 유저를 삭제하는 요청을 보낸다. 
+## carlos 유저 삭제 
+carlos 유저를 삭제하는 요청을 보낸다. 
 
 ![유저삭제](/images/burp-academy-jwt-5-5.png)
 
